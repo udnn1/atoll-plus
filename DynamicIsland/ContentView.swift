@@ -95,6 +95,7 @@ struct ContentView: View {
     @Default(.showStandardMediaControls) var showStandardMediaControls
     @Default(.externalDisplayStyle) var externalDisplayStyle
     @Default(.hideNonNotchUntilHover) var hideNonNotchUntilHover
+    @Default(.enableLLMUsageFeature) var enableLLMUsageFeature
     @Default(.terminalStickyMode) var terminalStickyMode
     
     // Battery settings reactivity
@@ -449,6 +450,11 @@ struct ContentView: View {
             && !isSneakPeekVisibleOnCurrentScreen
             && !isCurrentScreenExpansionVisible
             && !isConnectivityHUDVisible
+            && !isClaudeLimitPinned
+    }
+
+    private var isClaudeLimitPinned: Bool {
+        enableLLMUsageFeature && vm.notchState == .closed && !vm.hideOnClosed && !lockScreenManager.isLocked
     }
 
     private var isConnectivityHUDVisible: Bool {
@@ -1165,6 +1171,9 @@ struct ContentView: View {
                               layout: layout,
                               isHovering: isHovering
                           )
+                      } else if isClaudeLimitPinned && !coordinator.expandingView.show {
+                          ClaudeLimitLiveActivity()
+                              .transition(.opacity.animation(.smooth(duration: 0.25)))
                       } else if !coordinator.expandingView.show && vm.notchState == .closed && !shelfState.isEmpty && !vm.hideOnClosed && !lockScreenManager.isLocked && !enableMinimalisticUI {
                           ShelfInlineLiveActivity()
                               .transition(.opacity.animation(.smooth(duration: 0.25)))
@@ -1297,7 +1306,7 @@ struct ContentView: View {
                               case .stats:
                                   NotchStatsView()
                               case .llmUsage:
-                                  NotchLLMUsageView()
+                                  ClaudeLimitDetailsView()
                               case .colorPicker:
                                   NotchColorPickerView()
                             case .notes:

@@ -1,9 +1,6 @@
 name: Build App
 
 on:
-  push:
-    branches:
-      - notch-drop-hud
   workflow_dispatch:
 
 jobs:
