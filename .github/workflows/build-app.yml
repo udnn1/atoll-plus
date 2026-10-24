@@ -1,0 +1,64 @@
+name: Build App
+
+on:
+  push:
+    branches:
+      - notch-drop-hud
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode Version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Download Metal Toolchain
+        run: |
+          sudo xcodebuild -runFirstLaunch || true
+          for i in 1 2 3 4 5; do
+            if sudo xcodebuild -downloadComponent MetalToolchain; then break; fi
+            sleep 10
+          done
+
+      - name: Build
+        run: |
+          plutil -remove com.apple.security.mach-services DynamicIsland/DynamicIsland.entitlements || true
+          xcodebuild build \
+            -project DynamicIsland.xcodeproj \
+            -scheme DynamicIsland \
+            -configuration Release \
+            -destination "platform=macOS" \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
+            | tee build.log | grep -E "error:|warning: .*NotchDrop|BUILD" || true
+          test "${PIPESTATUS[0]}" -eq 0
+
+      - name: Package
+        run: |
+          APP=$(find build/Build/Products/Release -maxdepth 1 -name "*.app" | head -1)
+          ditto -c -k --keepParent "$APP" Atoll.zip
+
+      - name: Upload App
+        uses: actions/upload-artifact@v4
+        with:
+          name: Atoll-app
+          path: Atoll.zip
+          retention-days: 14
+
+      - name: Upload Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
