@@ -28,6 +28,7 @@ import SkyLightWindow
 struct DynamicNotchApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Default(.menubarIcon) var showMenuBarIcon
+    @Default(.enableLLMUsageFeature) var showClaudeLimit
     @Environment(\.openWindow) var openWindow
 
     let updaterController: SPUStandardUpdaterController
@@ -53,6 +54,8 @@ struct DynamicNotchApp: App {
                 SettingsWindowController.shared.showWindow()
             }
             CheckForUpdatesView(updater: updaterController.updater)
+            Divider()
+            Toggle("Limit Claude", isOn: $showClaudeLimit)
             Divider()
             Button("Restart Atoll") {
                 guard let bundleIdentifier = Bundle.main.bundleIdentifier else { return }
