@@ -89,6 +89,12 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     private var volumeEnabled = false
     private var brightnessEnabled = false
     private var keyboardBacklightEnabled = false
+    private var observingStartedAt = Date.distantPast
+    private let startupQuietPeriod: TimeInterval = 1.5
+
+    private var isInStartupQuietPeriod: Bool {
+        Date().timeIntervalSince(observingStartedAt) < startupQuietPeriod
+    }
 
     init(coordinator: DynamicIslandViewCoordinator) {
         self.coordinator = coordinator
@@ -98,6 +104,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         self.volumeEnabled = volumeEnabled
         self.brightnessEnabled = brightnessEnabled
         self.keyboardBacklightEnabled = keyboardBacklightEnabled
+        observingStartedAt = Date()
 
         volumeController.onVolumeChange = { [weak self] volume, muted in
             guard let self, self.volumeEnabled else { return }
@@ -257,6 +264,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
 
     @MainActor
     private func sendVolumeNotification(value: Float, isMuted: Bool) {
+        guard !isInStartupQuietPeriod else { return }
         // Locked, macOS draws the HUD (or the lock screen music panel does), so
         // stand down entirely — including the re-suppression below, which would
         // otherwise silence the native HUD again on the next keypress.
@@ -316,6 +324,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     }
 
     private func sendBrightnessNotification(value: Float) {
+        guard !isInStartupQuietPeriod else { return }
         guard !SystemHUDPlacement.suppressesAppHUD(isLocked: LockScreenManager.isLockedSnapshot) else { return }
 
         // Send to Circular HUD if enabled
@@ -356,6 +365,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     }
 
     private func sendKeyboardBacklightNotification(value: Float) {
+        guard !isInStartupQuietPeriod else { return }
         guard !SystemHUDPlacement.suppressesAppHUD(isLocked: LockScreenManager.isLockedSnapshot) else { return }
 
         // Send to Circular HUD if enabled
