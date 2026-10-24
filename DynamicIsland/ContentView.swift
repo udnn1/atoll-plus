@@ -251,6 +251,7 @@ struct ContentView: View {
     @State private var isHoveringClosedMusicWaveformControl: Bool = false
 
     @State private var gestureProgress: CGFloat = .zero
+    @State private var gestureProgressResetWorkItem: DispatchWorkItem?
     @State private var skipGestureActiveDirection: MusicManager.SkipDirection?
     @State private var isMusicControlWindowVisible = false
     @State private var pendingMusicControlTask: Task<Void, Never>?
@@ -2600,6 +2601,7 @@ struct ContentView: View {
         withAnimation(.smooth) {
             gestureProgress = (translation / Defaults[.gestureSensitivity]) * 20
         }
+        scheduleGestureProgressReset()
 
         if phase == .ended {
             withAnimation(.smooth) {
@@ -2618,6 +2620,17 @@ struct ContentView: View {
         }
     }
 
+    private func scheduleGestureProgressReset() {
+        gestureProgressResetWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            withAnimation(.smooth) {
+                gestureProgress = .zero
+            }
+        }
+        gestureProgressResetWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem)
+    }
+
     private var recordingOpenGestureLocked: Bool {
         recordingLiveActivityVisibleOnClosedNotch
     }
@@ -2628,6 +2641,7 @@ struct ContentView: View {
         withAnimation(.smooth) {
             gestureProgress = (translation / Defaults[.gestureSensitivity]) * -20
         }
+        scheduleGestureProgressReset()
 
         if phase == .ended {
             withAnimation(.smooth) {
