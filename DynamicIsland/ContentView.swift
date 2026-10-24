@@ -454,6 +454,10 @@ struct ContentView: View {
             && !isClaudeLimitPinned
     }
 
+    private var claudeLimitOffset: CGFloat {
+        isClaudeLimitPinned ? (claudeLimitService.activityOffset ?? 0) : 0
+    }
+
     private var isClaudeLimitPinned: Bool {
         enableLLMUsageFeature && vm.notchState == .closed && !vm.hideOnClosed && !lockScreenManager.isLocked
     }
@@ -694,6 +698,8 @@ struct ContentView: View {
             .padding(.horizontal, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.bottom, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.top, pillTopOffset)
+            .offset(x: claudeLimitOffset)
+            .animation(.smooth(duration: 0.25), value: claudeLimitOffset)
             .accessibilityIdentifier("AtollNotch")
     }
 
@@ -1045,7 +1051,7 @@ struct ContentView: View {
     /// open notch, no accessibility permission, or menus that end before the
     /// content begins all leave the notch centred where it belongs.
     private var menuBarClearanceOffset: CGFloat {
-        if isClaudeLimitPinned, let claudeOffset = claudeLimitService.activityOffset { return claudeOffset }
+        if isClaudeLimitPinned, claudeLimitService.activityOffset != nil { return 0 }
         guard vm.notchState == .closed,
               !vm.hideOnClosed,
               closedContentWidth > 0,
@@ -2152,7 +2158,7 @@ struct ContentView: View {
          // from the menus, activating at the old centre would arm the notch where
          // nothing is drawn and refuse the pointer where it is.
         let activationRect = CGRect(
-            x: screen.frame.midX - activationWidth / 2 + menuBarClearanceOffset,
+            x: screen.frame.midX - activationWidth / 2 + menuBarClearanceOffset + claudeLimitOffset,
             y: screen.frame.maxY - activationHeight,
             width: activationWidth,
             height: activationHeight
@@ -2433,7 +2439,7 @@ struct ContentView: View {
                 availability: musicManager.lyricsAvailability, context: pinnedLyricContext)
         let width = max(closedWidth, recordingSize?.width ?? 0) + 24
         // Same shift the content is drawn with, so the hit area stays under it.
-        let minX = screen.frame.midX - width / 2 + menuBarClearanceOffset
+        let minX = screen.frame.midX - width / 2 + menuBarClearanceOffset + claudeLimitOffset
         let minY = screen.frame.maxY - height
 
         return location.x >= minX && location.x <= minX + width
