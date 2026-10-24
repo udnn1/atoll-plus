@@ -698,8 +698,8 @@ struct ContentView: View {
             .padding(.horizontal, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.bottom, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.top, pillTopOffset)
-            .offset(x: claudeLimitOffset)
-            .animation(.smooth(duration: 0.25), value: claudeLimitOffset)
+            .offset(x: claudeLimitOffset + (isConnectivityHUDVisible ? 0 : menuBarClearanceOffset))
+            .animation(.smooth(duration: 0.25), value: claudeLimitOffset + menuBarClearanceOffset)
             .accessibilityIdentifier("AtollNotch")
     }
 
@@ -1052,6 +1052,7 @@ struct ContentView: View {
     /// content begins all leave the notch centred where it belongs.
     private var menuBarClearanceOffset: CGFloat {
         if isClaudeLimitPinned, claudeLimitService.activityOffset != nil { return 0 }
+        guard isNonNotchScreen else { return 0 }
         guard vm.notchState == .closed,
               !vm.hideOnClosed,
               closedContentWidth > 0,
@@ -1297,7 +1298,6 @@ struct ContentView: View {
               // its middle transparent lane is what keeps both wings visible.
               // Menu-bar clearance would shift that lane underneath the camera
               // housing and clip one of the two content areas.
-              .offset(x: isConnectivityHUDVisible ? 0 : menuBarClearanceOffset)
               .animation(.smooth(duration: 0.25), value: menuBarClearanceOffset)
               .zIndex(2)
               
