@@ -40,66 +40,79 @@ struct ClaudeLimitLiveActivity: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3)) { _ in
             let ringSize = max(16, vm.effectiveClosedNotchHeight - 6)
-            let sideWidth = ringSize + 20
-            let notched = isNotchScreen
-            let placement = notched ? resolvePlacement(sideWidth: sideWidth) : .left
-            let offset: CGFloat? = notched ? (placement == .left ? -sideWidth / 2 : placement == .right ? sideWidth / 2 : 0) : nil
-            HStack(spacing: 0) {
-                if placement == .left {
-                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .trailing)
-                } else if !notched {
-                    side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .leading)
+            let shapePadding = cornerRadiusInsets.closed.bottom
+            let physical = physicalNotchWidth
+            if let physical {
+                let ringSide = shapePadding + 4 + ringSize + 4
+                let placement = resolvePlacement(extension: 4 + ringSize + 4 + shapePadding, physicalWidth: physical)
+                let offset: CGFloat = placement == .left ? -ringSide / 2 : placement == .right ? ringSide / 2 : 0
+                HStack(spacing: 0) {
+                    if placement == .left {
+                        ringView(size: ringSize)
+                            .padding(.trailing, shapePadding + 4)
+                            .frame(width: ringSide, alignment: .trailing)
+                    }
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(width: max(physical - 2 * shapePadding, 20))
+                    if placement == .right {
+                        ringView(size: ringSize)
+                            .padding(.leading, shapePadding + 4)
+                            .frame(width: ringSide, alignment: .leading)
+                    }
                 }
-
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(width: vm.closedNotchSize.width)
-
-                if placement == .right {
-                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .leading)
-                } else if !notched {
-                    side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .trailing)
+                .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
+                .animation(.smooth(duration: 0.25), value: placement)
+                .onAppear { service.activityOffset = offset }
+                .onChange(of: offset) { _, value in service.activityOffset = value }
+            } else {
+                let sideWidth = ringSize + 20
+                HStack(spacing: 0) {
+                    ringView(size: ringSize)
+                        .padding(.trailing, 4)
+                        .frame(width: sideWidth, alignment: .trailing)
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(width: vm.closedNotchSize.width)
+                    Color.clear.frame(width: sideWidth)
                 }
+                .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
+                .onAppear { service.activityOffset = nil }
             }
-            .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
-            .onAppear { service.activityOffset = offset }
-            .onChange(of: offset) { _, value in service.activityOffset = value }
         }
         .onDisappear { service.activityOffset = nil }
     }
 
-    private var isNotchScreen: Bool {
+    private var currentScreen: NSScreen? {
         let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
-        return (NSScreen.screens.first(where: { $0.localizedName == name })?.safeAreaInsets.top ?? 0) > 0
+        return NSScreen.screens.first(where: { $0.localizedName == name })
     }
 
-    @ViewBuilder
-    private func side(isRing: Bool, ringSize: CGFloat, width: CGFloat, alignment: Alignment) -> some View {
-        if isRing {
-            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: ringSize)
-                .padding(alignment == .trailing ? .trailing : .leading, 4)
-                .frame(width: width, alignment: alignment)
-                .contentShape(Rectangle())
-                .onHover { hovering in
-                    guard hovering, vm.notchState == .closed else { return }
-                    DynamicIslandViewCoordinator.shared.currentView = .llmUsage
-                    vm.open()
-                }
-                .transition(.opacity)
-        } else {
-            Color.clear.frame(width: width)
-        }
+    private var physicalNotchWidth: CGFloat? {
+        guard let screen = currentScreen, screen.safeAreaInsets.top > 0,
+              let left = screen.auxiliaryTopLeftArea?.width,
+              let right = screen.auxiliaryTopRightArea?.width else { return nil }
+        return screen.frame.width - left - right
     }
 
-    private func resolvePlacement(sideWidth: CGFloat) -> Placement {
-        let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
-        guard let screen = NSScreen.screens.first(where: { $0.localizedName == name }),
-              screen.safeAreaInsets.top > 0 else { return .left }
+    private func ringView(size: CGFloat) -> some View {
+        ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+            .contentShape(Rectangle())
+            .onHover { hovering in
+                guard hovering, vm.notchState == .closed else { return }
+                DynamicIslandViewCoordinator.shared.currentView = .llmUsage
+                vm.open()
+            }
+            .transition(.opacity)
+    }
+
+    private func resolvePlacement(extension wing: CGFloat, physicalWidth: CGFloat) -> Placement {
+        guard let screen = currentScreen else { return .left }
         let gap = MenuBarLayout.clearanceGap
-        let notchLeft = screen.frame.midX - vm.closedNotchSize.width / 2
-        let notchRight = screen.frame.midX + vm.closedNotchSize.width / 2
-        if let menusRightEdge = menuBarLayout.appMenusRightEdge, menusRightEdge + gap > notchLeft - sideWidth {
-            if let statusLeft = Self.statusItemsLeftEdge(on: screen), statusLeft - gap < notchRight + sideWidth {
+        let notchLeft = screen.frame.midX - physicalWidth / 2
+        let notchRight = screen.frame.midX + physicalWidth / 2
+        if let menusRightEdge = menuBarLayout.appMenusRightEdge, menusRightEdge + gap > notchLeft - wing {
+            if let statusLeft = Self.statusItemsLeftEdge(on: screen), statusLeft - gap < notchRight + wing {
                 return .hidden
             }
             return .right
