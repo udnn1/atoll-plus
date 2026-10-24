@@ -40,13 +40,13 @@ struct ClaudeLimitLiveActivity: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3)) { _ in
             let ringSize = max(16, vm.effectiveClosedNotchHeight - 6)
-            let sideWidth = ringSize + 10
+            let sideWidth = ringSize + 20
             let notched = isNotchScreen
             let placement = notched ? resolvePlacement(sideWidth: sideWidth) : .left
             let offset: CGFloat? = notched ? (placement == .left ? -sideWidth / 2 : placement == .right ? sideWidth / 2 : 0) : nil
             HStack(spacing: 0) {
                 if placement == .left {
-                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .leading)
+                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .trailing)
                 } else if !notched {
                     side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .leading)
                 }
@@ -56,7 +56,7 @@ struct ClaudeLimitLiveActivity: View {
                     .frame(width: vm.closedNotchSize.width)
 
                 if placement == .right {
-                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .trailing)
+                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .leading)
                 } else if !notched {
                     side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .trailing)
                 }
@@ -77,7 +77,14 @@ struct ClaudeLimitLiveActivity: View {
     private func side(isRing: Bool, ringSize: CGFloat, width: CGFloat, alignment: Alignment) -> some View {
         if isRing {
             ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: ringSize)
+                .padding(alignment == .trailing ? .trailing : .leading, 4)
                 .frame(width: width, alignment: alignment)
+                .contentShape(Rectangle())
+                .onHover { hovering in
+                    guard hovering, vm.notchState == .closed else { return }
+                    DynamicIslandViewCoordinator.shared.currentView = .llmUsage
+                    vm.open()
+                }
                 .transition(.opacity)
         } else {
             Color.clear.frame(width: width)
