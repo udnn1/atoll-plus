@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import AppKit
+import ApplicationServices
 import SwiftUI
 import Defaults
 
@@ -29,24 +31,137 @@ extension ClaudeLimitService {
 struct ClaudeLimitLiveActivity: View {
     @EnvironmentObject var vm: DynamicIslandViewModel
     @ObservedObject private var service = ClaudeLimitService.shared
+    @ObservedObject private var menuBarLayout = MenuBarLayout.shared
     @Default(.claudeLimitMetric) private var metric
     @Default(.claudeLimitShowRing) private var showRing
 
+    private enum Placement { case left, right, hidden }
+
     var body: some View {
-        let ringSize = max(16, vm.effectiveClosedNotchHeight - 6)
-        let sideWidth = ringSize + 10
-        HStack(spacing: 0) {
-            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: ringSize)
-                .frame(width: sideWidth, alignment: .leading)
+        TimelineView(.periodic(from: .now, by: 3)) { _ in
+            let ringSize = max(16, vm.effectiveClosedNotchHeight - 6)
+            let sideWidth = ringSize + 10
+            let notched = isNotchScreen
+            let placement = notched ? resolvePlacement(sideWidth: sideWidth) : .left
+            let offset: CGFloat? = notched ? (placement == .left ? -sideWidth / 2 : placement == .right ? sideWidth / 2 : 0) : nil
+            HStack(spacing: 0) {
+                if placement == .left {
+                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .leading)
+                } else if !notched {
+                    side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .leading)
+                }
 
-            Rectangle()
-                .fill(Color.black)
-                .frame(width: vm.closedNotchSize.width)
+                Rectangle()
+                    .fill(Color.black)
+                    .frame(width: vm.closedNotchSize.width)
 
-            Color.clear
-                .frame(width: sideWidth)
+                if placement == .right {
+                    side(isRing: true, ringSize: ringSize, width: sideWidth, alignment: .trailing)
+                } else if !notched {
+                    side(isRing: false, ringSize: ringSize, width: sideWidth, alignment: .trailing)
+                }
+            }
+            .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
+            .onAppear { service.activityOffset = offset }
+            .onChange(of: offset) { _, value in service.activityOffset = value }
         }
-        .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
+        .onDisappear { service.activityOffset = nil }
+    }
+
+    private var isNotchScreen: Bool {
+        let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
+        return (NSScreen.screens.first(where: { $0.localizedName == name })?.safeAreaInsets.top ?? 0) > 0
+    }
+
+    @ViewBuilder
+    private func side(isRing: Bool, ringSize: CGFloat, width: CGFloat, alignment: Alignment) -> some View {
+        if isRing {
+            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: ringSize)
+                .frame(width: width, alignment: alignment)
+                .transition(.opacity)
+        } else {
+            Color.clear.frame(width: width)
+        }
+    }
+
+    private func resolvePlacement(sideWidth: CGFloat) -> Placement {
+        let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
+        guard let screen = NSScreen.screens.first(where: { $0.localizedName == name }),
+              screen.safeAreaInsets.top > 0 else { return .left }
+        let gap = MenuBarLayout.clearanceGap
+        let notchLeft = screen.frame.midX - vm.closedNotchSize.width / 2
+        let notchRight = screen.frame.midX + vm.closedNotchSize.width / 2
+        if let menusRightEdge = menuBarLayout.appMenusRightEdge, menusRightEdge + gap > notchLeft - sideWidth {
+            if let statusLeft = Self.statusItemsLeftEdge(on: screen), statusLeft - gap < notchRight + sideWidth {
+                return .hidden
+            }
+            return .right
+        }
+        return .left
+    }
+
+    private static func statusItemsLeftEdge(on screen: NSScreen) -> CGFloat? {
+        ClaudeLimitStatusBarProbe.shared.requestRefresh()
+        return ClaudeLimitStatusBarProbe.shared.leftEdge(minX: screen.frame.midX, maxX: screen.frame.maxX)
+    }
+}
+
+final class ClaudeLimitStatusBarProbe: @unchecked Sendable {
+    static let shared = ClaudeLimitStatusBarProbe()
+
+    private let lock = NSLock()
+    private var positions: [CGFloat] = []
+    private var lastScan = Date.distantPast
+    private var inFlight = false
+
+    func leftEdge(minX: CGFloat, maxX: CGFloat) -> CGFloat? {
+        lock.lock()
+        defer { lock.unlock() }
+        return positions.filter { $0 >= minX && $0 < maxX }.min()
+    }
+
+    func requestRefresh() {
+        lock.lock()
+        guard !inFlight, Date().timeIntervalSince(lastScan) > 2.5 else {
+            lock.unlock()
+            return
+        }
+        inFlight = true
+        lock.unlock()
+        Task.detached(priority: .utility) {
+            let found = Self.scan()
+            self.lock.lock()
+            self.positions = found
+            self.lastScan = Date()
+            self.inFlight = false
+            self.lock.unlock()
+        }
+    }
+
+    private static func scan() -> [CGFloat] {
+        guard AXIsProcessTrusted() else { return [] }
+        var xs: [CGFloat] = []
+        for app in NSWorkspace.shared.runningApplications where app.activationPolicy != .prohibited || app.bundleIdentifier == "com.apple.controlcenter" || app.bundleIdentifier == "com.apple.systemuiserver" {
+            let element = AXUIElementCreateApplication(app.processIdentifier)
+            AXUIElementSetMessagingTimeout(element, 0.05)
+            var extras: CFTypeRef?
+            guard AXUIElementCopyAttributeValue(element, "AXExtrasMenuBar" as CFString, &extras) == .success,
+                  let bar = extras, CFGetTypeID(bar) == AXUIElementGetTypeID() else { continue }
+            let barElement = bar as! AXUIElement
+            AXUIElementSetMessagingTimeout(barElement, 0.05)
+            var children: CFTypeRef?
+            guard AXUIElementCopyAttributeValue(barElement, kAXChildrenAttribute as CFString, &children) == .success,
+                  let items = children as? [AXUIElement] else { continue }
+            for item in items {
+                AXUIElementSetMessagingTimeout(item, 0.05)
+                var value: CFTypeRef?
+                guard AXUIElementCopyAttributeValue(item, kAXPositionAttribute as CFString, &value) == .success,
+                      let v = value, CFGetTypeID(v) == AXValueGetTypeID() else { continue }
+                var point = CGPoint.zero
+                if AXValueGetValue(v as! AXValue, .cgPoint, &point) { xs.append(point.x) }
+            }
+        }
+        return xs
     }
 }
 

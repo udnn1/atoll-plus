@@ -61,6 +61,7 @@ final class ClaudeLimitService: ObservableObject {
     @Published private(set) var lastGood: ClaudeLimitUsage?
     @Published private(set) var nextAt: Date = Date()
     @Published private(set) var isRunning = false
+    @Published var activityOffset: CGFloat?
 
     private var interval: Double = intervalStart
     private var lastRequest: Double = 0

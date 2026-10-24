@@ -54,6 +54,7 @@ struct ContentView: View {
     @ObservedObject var lockScreenManager = LockScreenManager.shared
     @ObservedObject private var networkConnectivityManager = NetworkConnectivityManager.shared
     @ObservedObject private var menuBarLayout = MenuBarLayout.shared
+    @ObservedObject private var claudeLimitService = ClaudeLimitService.shared
     /// Width of the closed-notch content, measured so its left edge can be
     /// compared against the frontmost app's menus. Only the *size* is read --
     /// the offset that follows does not change it, so there is no feedback.
@@ -1044,6 +1045,7 @@ struct ContentView: View {
     /// open notch, no accessibility permission, or menus that end before the
     /// content begins all leave the notch centred where it belongs.
     private var menuBarClearanceOffset: CGFloat {
+        if isClaudeLimitPinned, let claudeOffset = claudeLimitService.activityOffset { return claudeOffset }
         guard vm.notchState == .closed,
               !vm.hideOnClosed,
               closedContentWidth > 0,
