@@ -356,12 +356,6 @@ class DynamicIslandViewCoordinator: ObservableObject {
         if !isExtensionType && !bypassedTypes.contains(type) && !Defaults[.enableSystemHUD] {
             return
         }
-        if status, NotchDropHUDWindowManager.handles(type) {
-            Task { @MainActor in
-                NotchDropHUDWindowManager.shared.show(type: type, value: value, icon: icon, onScreen: targetScreen)
-            }
-            return
-        }
         DispatchQueue.main.async {
             // Single write so `sneakPeek.didSet` (which schedules the auto-hide)
             // fires once, not once per field — the per-field writes raced the hide
