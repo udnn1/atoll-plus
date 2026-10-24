@@ -8028,7 +8028,7 @@ struct StatsSettings: View {
                 }
 
                 Defaults.Toggle(key: .enableLLMUsageFeature) {
-                    Text("Enable LLM Usage Monitor")
+                    Text("Licznik limitu Claude")
                 }
                 .settingsHighlight(id: highlightID("Enable LLM Usage Monitor"))
 
