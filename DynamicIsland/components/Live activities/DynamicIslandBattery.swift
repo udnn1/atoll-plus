@@ -109,9 +109,12 @@ struct BatteryView: View {
                     if let statusSymbol {
                         Image(systemName: statusSymbol)
                             .font(.system(size: height * 0.42, weight: .bold))
+                            .imageScale(.small)
+                            .layoutPriority(1)
                     }
                 }
                 .foregroundStyle(Color.black.opacity(0.82))
+                .padding(.horizontal, height * 0.2)
                 .frame(width: batteryWidth, alignment: .center)
             }
             .frame(width: batteryWidth, height: height)
