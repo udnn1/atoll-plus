@@ -202,10 +202,12 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             }
         }
         
-        if NotchDropHUDWindowManager.isActive {
+        if MediaMateHUDWindowManager.isActive {
             let volume = volumeController.currentVolume
-            if (direction == .up && volume >= 0.99) || (direction == .down && volume <= 0.01) {
-                Task { @MainActor in NotchDropHUDWindowManager.shared.triggerBump() }
+            if direction == .up && volume >= 0.99 {
+                Task { @MainActor in MediaMateHUDWindowManager.shared.triggerBump(direction: 1) }
+            } else if direction == .down && volume <= 0.01 {
+                Task { @MainActor in MediaMateHUDWindowManager.shared.triggerBump(direction: -1) }
             }
         }
 
@@ -251,10 +253,12 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             }
         }
         
-        if NotchDropHUDWindowManager.isActive {
+        if MediaMateHUDWindowManager.isActive {
             let level = isBacklight ? keyboardBacklightController.currentLevel : brightnessController.currentBrightness
-            if (direction == .up && level >= 0.99) || (direction == .down && level <= 0.01) {
-                Task { @MainActor in NotchDropHUDWindowManager.shared.triggerBump() }
+            if direction == .up && level >= 0.99 {
+                Task { @MainActor in MediaMateHUDWindowManager.shared.triggerBump(direction: 1) }
+            } else if direction == .down && level <= 0.01 {
+                Task { @MainActor in MediaMateHUDWindowManager.shared.triggerBump(direction: -1) }
             }
         }
 

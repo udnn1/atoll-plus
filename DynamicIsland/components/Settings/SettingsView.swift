@@ -1958,7 +1958,7 @@ extension View {
 
 private struct HUDAndOSDSettingsView: View {
     @State private var selectedTab: Tab = {
-        if Defaults[.enableSystemHUD] && Defaults[.enableNotchDropHUD] { return .drop }
+        if Defaults[.enableSystemHUD] && Defaults[.enableMediaMateHUD] { return .mediaMate }
         if Defaults[.enableSystemHUD] { return .hud }
         if Defaults[.enableCustomOSD] { return .osd }
         if Defaults[.enableVerticalHUD] { return .vertical }
@@ -1969,10 +1969,9 @@ private struct HUDAndOSDSettingsView: View {
     @Default(.enableCustomOSD) var enableCustomOSD
     @Default(.enableVerticalHUD) var enableVerticalHUD
     @Default(.enableCircularHUD) var enableCircularHUD
-    @Default(.enableNotchDropHUD) var enableNotchDropHUD
-    @Default(.notchDropHUDShowPercentage) var notchDropHUDShowPercentage
-    @Default(.notchDropHUDUseAccentColor) var notchDropHUDUseAccentColor
-    @Default(.notchDropHUDDuration) var notchDropHUDDuration
+    @Default(.enableMediaMateHUD) var enableMediaMateHUD
+    @Default(.mediaMateHUDUseAccentColor) var mediaMateHUDUseAccentColor
+    @Default(.mediaMateHUDDuration) var mediaMateHUDDuration
     @Default(.verticalHUDPosition) var verticalHUDPosition
     @Default(.enableVolumeHUD) var enableVolumeHUD
     @Default(.enableBrightnessHUD) var enableBrightnessHUD
@@ -1997,7 +1996,7 @@ private struct HUDAndOSDSettingsView: View {
     @ObservedObject private var accessibilityPermission = AccessibilityPermissionStore.shared
 
     private enum Tab: String, CaseIterable, Identifiable {
-        case drop = "Notch Drop"
+        case mediaMate = "MediaMate"
         case hud = "Dynamic Island HUD"
         case osd = "Custom OSD"
         case vertical = "Vertical Bar"
@@ -2034,42 +2033,31 @@ private struct HUDAndOSDSettingsView: View {
     private var hudVariantCards: some View {
             HStack(spacing: 16) {
                 HUDSelectionCard(
-                    title: String(localized: "Notch Drop"),
-                    isSelected: selectedTab == .drop,
+                    title: String(localized: "MediaMate"),
+                    isSelected: selectedTab == .mediaMate,
                     action: {
-                        selectedTab = .drop
+                        selectedTab = .mediaMate
                         enableSystemHUD = true
-                        enableNotchDropHUD = true
+                        enableMediaMateHUD = true
                         enableCustomOSD = false
                         enableVerticalHUD = false
                         enableCircularHUD = false
                     }
                 ) {
-                    NotchShape(topCornerRadius: 4, bottomCornerRadius: 10)
-                        .fill(Color.black)
-                        .frame(width: 76, height: 30)
-                        .shadow(color: .black.opacity(0.3), radius: 4, y: 2)
-                        .overlay(alignment: .bottom) {
-                            HStack(spacing: 5) {
-                                Image(systemName: previewModel.iconName)
-                                    .font(.system(size: 8, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 10)
-                                GeometryReader { geo in
-                                    Capsule()
-                                        .fill(Color.white.opacity(0.2))
-                                        .overlay(alignment: .leading) {
-                                            Capsule()
-                                                .fill(Color.white)
-                                                .frame(width: geo.size.width * CGFloat(previewModel.level))
-                                                .animation(.spring(response: 0.3), value: previewModel.level)
-                                        }
-                                }
-                                .frame(height: 3)
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 7)
-                        }
+                    ZStack(alignment: .bottom) {
+                        Color.black.opacity(0.75)
+                        Rectangle()
+                            .fill(Color(white: 0.93))
+                            .frame(height: 54 * CGFloat(previewModel.level))
+                            .animation(.spring(response: 0.3), value: previewModel.level)
+                        Image(systemName: previewModel.iconName)
+                            .font(.system(size: 8, weight: .medium))
+                            .foregroundStyle(Color(white: 0.42))
+                            .padding(.bottom, 5)
+                    }
+                    .frame(width: 20, height: 54)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .shadow(color: .black.opacity(0.2), radius: 3, y: 1)
                 }
 
                 HUDSelectionCard(
@@ -2078,7 +2066,7 @@ private struct HUDAndOSDSettingsView: View {
                     action: {
                         selectedTab = .hud
                         enableSystemHUD = true
-                        enableNotchDropHUD = false
+                        enableMediaMateHUD = false
                         enableCustomOSD = false
                         enableVerticalHUD = false
                         enableCircularHUD = false
@@ -2118,7 +2106,7 @@ private struct HUDAndOSDSettingsView: View {
                     isSelected: selectedTab == .osd,
                     action: {
                         selectedTab = .osd
-                        enableNotchDropHUD = false
+                        enableMediaMateHUD = false
                         enableCustomOSD = true
                         enableSystemHUD = false
                         enableVerticalHUD = false
@@ -2161,7 +2149,7 @@ private struct HUDAndOSDSettingsView: View {
                     isSelected: selectedTab == .vertical,
                     action: {
                         selectedTab = .vertical
-                        enableNotchDropHUD = false
+                        enableMediaMateHUD = false
                         enableVerticalHUD = true
                         enableSystemHUD = false
                         enableCustomOSD = false
@@ -2205,7 +2193,7 @@ private struct HUDAndOSDSettingsView: View {
                     isSelected: selectedTab == .circular,
                     action: {
                         selectedTab = .circular
-                        enableNotchDropHUD = false
+                        enableMediaMateHUD = false
                         enableCircularHUD = true
                         enableSystemHUD = false
                         enableCustomOSD = false
@@ -2249,16 +2237,15 @@ private struct HUDAndOSDSettingsView: View {
             }
 
             switch selectedTab {
-            case .drop:
+            case .mediaMate:
                 Section {
-                    Toggle("Show Percentage", isOn: $notchDropHUDShowPercentage)
-                    Toggle("Use Accent Color", isOn: $notchDropHUDUseAccentColor)
+                    Toggle("Use Accent Color", isOn: $mediaMateHUDUseAccentColor)
                     VStack(alignment: .leading) {
-                        Text("Display Duration: \(String(format: "%.1f", notchDropHUDDuration))s")
-                        Slider(value: $notchDropHUDDuration, in: 0.8...4, step: 0.1)
+                        Text("Display Duration: \(String(format: "%.1f", mediaMateHUDDuration))s")
+                        Slider(value: $mediaMateHUDDuration, in: 0.8...4, step: 0.1)
                     }
                 } header: {
-                    Text("Notch Drop")
+                    Text("MediaMate")
                 }
                 HUD()
             case .hud:
