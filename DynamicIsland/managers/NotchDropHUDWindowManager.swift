@@ -23,17 +23,17 @@ import SkyLightWindow
 import Defaults
 
 @MainActor
-final class MediaMateHUDWindowManager {
-    static let shared = MediaMateHUDWindowManager()
+final class NotchDropHUDWindowManager {
+    static let shared = NotchDropHUDWindowManager()
 
-    private var windows: [WindowKey: HUDWindow] = [:]
+    private var windows: [String: DropWindow] = [:]
     private var hideWorkItem: DispatchWorkItem?
-    private let fadeOutDuration: TimeInterval = 0.3
+    private let collapseDuration: TimeInterval = 0.45
 
     private init() {}
 
     nonisolated static var isActive: Bool {
-        Defaults[.enableSystemHUD] && Defaults[.enableMediaMateHUD]
+        Defaults[.enableSystemHUD] && Defaults[.enableNotchDropHUD]
     }
 
     nonisolated static func handles(_ type: SneakContentType) -> Bool {
@@ -52,52 +52,43 @@ final class MediaMateHUDWindowManager {
         let screens = resolveScreens(targetScreen)
         guard !screens.isEmpty else { return }
 
-        let orientation = MediaMateHUDOrientation.forType(type)
-        let targetKeys = Set(screens.map { WindowKey(screen: $0.localizedName, orientation: orientation) })
+        let targetKeys = Set(screens.map(\.localizedName))
         for (key, window) in windows where !targetKeys.contains(key) {
-            fadeOut(window)
+            collapse(window)
         }
 
         for screen in screens {
-            let window = ensureWindow(for: screen, orientation: orientation)
+            let window = ensureWindow(for: screen)
             window.state.type = type
             window.state.value = min(max(value, 0), 1)
             window.state.icon = icon
 
-            if !window.state.isVisible {
+            if !window.nsWindow.isVisible || !window.state.isExpanded {
                 window.nsWindow.orderFrontRegardless()
                 DispatchQueue.main.async {
-                    window.state.isVisible = true
+                    window.state.isExpanded = true
                 }
             }
         }
 
-        scheduleHide(after: Defaults[.mediaMateHUDDuration])
+        scheduleHide(after: Defaults[.notchDropHUDDuration])
     }
 
-    func triggerBump(direction: Int) {
+    func triggerBump() {
         guard Self.isActive else { return }
-        for window in windows.values where window.state.isVisible {
-            if direction > 0 {
-                window.state.lengthStretch = 1.07
-                window.state.thicknessStretch = 0.94
-            } else {
-                window.state.lengthStretch = 0.93
-                window.state.thicknessStretch = 0.84
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.11) {
-                window.state.lengthStretch = 1
-                window.state.thicknessStretch = 1
+        for window in windows.values where window.state.isExpanded {
+            window.state.stretch = 0.05
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.09) {
+                window.state.stretch = 0
             }
         }
-        scheduleHide(after: Defaults[.mediaMateHUDDuration])
     }
 
     func hideAllImmediately() {
         hideWorkItem?.cancel()
         hideWorkItem = nil
         for window in windows.values {
-            window.state.isVisible = false
+            window.state.isExpanded = false
             window.nsWindow.orderOut(nil)
         }
     }
@@ -112,19 +103,22 @@ final class MediaMateHUDWindowManager {
         return NSScreen.main.map { [$0] } ?? []
     }
 
-    private func ensureWindow(for screen: NSScreen, orientation: MediaMateHUDOrientation) -> HUDWindow {
-        let key = WindowKey(screen: screen.localizedName, orientation: orientation)
-        let frame = frame(for: screen, orientation: orientation)
+    private func ensureWindow(for screen: NSScreen) -> DropWindow {
+        let key = screen.localizedName
+        let notchSize = getClosedNotchSize(screen: key)
+        let frame = frame(for: screen, notchSize: notchSize)
 
-        if let existing = windows[key] {
+        if let existing = windows[key], existing.state.notchSize == notchSize {
             if existing.nsWindow.frame != frame {
                 existing.nsWindow.setFrame(frame, display: false)
             }
             return existing
         }
 
-        let state = MediaMateHUDState(orientation: orientation)
-        let hostingView = NSHostingView(rootView: MediaMateHUDView(state: state))
+        windows[key]?.nsWindow.orderOut(nil)
+
+        let state = NotchDropHUDState(notchSize: notchSize)
+        let hostingView = NSHostingView(rootView: NotchDropHUDView(state: state))
 
         let window = NSWindow(
             contentRect: frame,
@@ -142,25 +136,19 @@ final class MediaMateHUDWindowManager {
 
         SkyLightOperator.shared.delegateWindow(window)
 
-        let hudWindow = HUDWindow(nsWindow: window, state: state)
-        windows[key] = hudWindow
-        return hudWindow
+        let drop = DropWindow(nsWindow: window, state: state)
+        windows[key] = drop
+        return drop
     }
 
-    private func frame(for screen: NSScreen, orientation: MediaMateHUDOrientation) -> NSRect {
-        let size = MediaMateHUDMetrics.windowSize(for: orientation)
-        let padding = MediaMateHUDMetrics.windowPadding
-        let margin = MediaMateHUDMetrics.edgeMargin
-        let visible = screen.visibleFrame
-        let x = visible.maxX - margin - size.width + padding
-
-        switch orientation {
-        case .vertical:
-            return NSRect(x: x, y: screen.frame.midY - size.height / 2, width: size.width, height: size.height)
-        case .horizontal:
-            let y = visible.maxY - margin - size.height + padding
-            return NSRect(x: x, y: y, width: size.width, height: size.height)
-        }
+    private func frame(for screen: NSScreen, notchSize: CGSize) -> NSRect {
+        let size = NotchDropHUDMetrics.windowSize(for: notchSize)
+        return NSRect(
+            x: screen.frame.midX - size.width / 2,
+            y: screen.frame.maxY - size.height,
+            width: size.width,
+            height: size.height
+        )
     }
 
     private func scheduleHide(after delay: TimeInterval) {
@@ -169,7 +157,7 @@ final class MediaMateHUDWindowManager {
             Task { @MainActor in
                 guard let self else { return }
                 for window in self.windows.values {
-                    self.fadeOut(window)
+                    self.collapse(window)
                 }
             }
         }
@@ -177,23 +165,18 @@ final class MediaMateHUDWindowManager {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
     }
 
-    private func fadeOut(_ window: HUDWindow) {
-        guard window.state.isVisible else { return }
-        window.state.isVisible = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + fadeOutDuration) {
-            guard !window.state.isVisible else { return }
+    private func collapse(_ window: DropWindow) {
+        guard window.state.isExpanded else { return }
+        window.state.isExpanded = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + collapseDuration) {
+            guard !window.state.isExpanded else { return }
             window.nsWindow.orderOut(nil)
         }
     }
 
-    private struct WindowKey: Hashable {
-        let screen: String
-        let orientation: MediaMateHUDOrientation
-    }
-
-    private struct HUDWindow {
+    private struct DropWindow {
         let nsWindow: NSWindow
-        let state: MediaMateHUDState
+        let state: NotchDropHUDState
     }
 }
 #endif

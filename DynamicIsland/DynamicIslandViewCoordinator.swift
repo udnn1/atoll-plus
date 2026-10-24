@@ -356,9 +356,9 @@ class DynamicIslandViewCoordinator: ObservableObject {
         if !isExtensionType && !bypassedTypes.contains(type) && !Defaults[.enableSystemHUD] {
             return
         }
-        if status, MediaMateHUDWindowManager.handles(type) {
+        if status, NotchDropHUDWindowManager.handles(type) {
             Task { @MainActor in
-                MediaMateHUDWindowManager.shared.show(type: type, value: value, icon: icon, onScreen: targetScreen)
+                NotchDropHUDWindowManager.shared.show(type: type, value: value, icon: icon, onScreen: targetScreen)
             }
             return
         }
