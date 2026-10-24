@@ -1439,6 +1439,11 @@ extension Defaults.Keys {
     static let circularHUDStrokeWidth = Key<CGFloat>("circularHUDStrokeWidth", default: 4)
     static let circularHUDUseAccentColor = Key<Bool>("circularHUDUseAccentColor", default: true)
 
+    static let enableNotchDropHUD = Key<Bool>("enableNotchDropHUD", default: true)
+    static let notchDropHUDShowPercentage = Key<Bool>("notchDropHUDShowPercentage", default: true)
+    static let notchDropHUDUseAccentColor = Key<Bool>("notchDropHUDUseAccentColor", default: false)
+    static let notchDropHUDDuration = Key<Double>("notchDropHUDDuration", default: 1.6)
+
     // MARK: Third-Party DDC Integration
     static let enableThirdPartyDDCIntegration = Key<Bool>("enableThirdPartyDDCIntegration", default: false)
     static let thirdPartyDDCProvider = Key<ThirdPartyDDCProvider>("thirdPartyDDCProvider", default: .betterDisplay)

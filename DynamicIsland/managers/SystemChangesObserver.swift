@@ -202,6 +202,13 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             }
         }
         
+        if NotchDropHUDWindowManager.isActive {
+            let volume = volumeController.currentVolume
+            if (direction == .up && volume >= 0.99) || (direction == .down && volume <= 0.01) {
+                Task { @MainActor in NotchDropHUDWindowManager.shared.triggerBump() }
+            }
+        }
+
         let baseStep = volumeStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
         volumeController.adjust(by: delta)
@@ -244,6 +251,13 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             }
         }
         
+        if NotchDropHUDWindowManager.isActive {
+            let level = isBacklight ? keyboardBacklightController.currentLevel : brightnessController.currentBrightness
+            if (direction == .up && level >= 0.99) || (direction == .down && level <= 0.01) {
+                Task { @MainActor in NotchDropHUDWindowManager.shared.triggerBump() }
+            }
+        }
+
         let baseStep = brightnessStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
         if isBacklight {
