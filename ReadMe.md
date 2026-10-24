@@ -18,6 +18,8 @@
 - Rozmycie zawartości notcha znika po przewijaniu kółkiem myszy. Wcześniej myszy bez fazy końca gestu (np. Logitech) zostawiały rozmycie na stałe.
 - Ikona baterii ma margines wewnętrzny, więc „100” z wtyczką nie dotyka krawędzi.
 - Przełącznik **Limit Claude** w menu na pasku menu.
+- Regulator głośności i jasności nie wyskakuje przy starcie Atolla.
+- Odsuwanie wyspy od menu aplikacji przesuwa cały kształt wyspy (wcześniej przesuwała się tylko zawartość i animacje były ucinane). Na ekranie z notchem wyspa zostaje na środku, a gdy menu dochodzą do notcha, jej lewe skrzydło się chowa, żeby nie zasłaniać menu.
 
 ### Ustawienia, których używam
 - HUD głośności i jasności: **Vertical Bar** po prawej (styl jak w MediaMate).
@@ -29,11 +31,10 @@
 Wymagania: macOS 14+, Xcode (u mnie 27.1) z pobranym Metal Toolchain (`xcodebuild -downloadComponent MetalToolchain`).
 
 ```bash
-xcodebuild build -project DynamicIsland.xcodeproj -scheme DynamicIsland -configuration Release \
-  -destination "platform=macOS" -derivedDataPath build \
-  CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES
-./scripts/install-local.sh build/Build/Products/Release/Atoll.app
+./scripts/build-local.sh
 ```
+
+Skrypt buduje w trybie przyrostowym (`SWIFT_COMPILATION_MODE=singlefile`, ok. 12–20 s po zmianie zamiast ~100 s przy kompilacji całego modułu), pilnuje, żeby Mac nie zasnął w trakcie (`caffeinate`), i od razu instaluje wynik. Opcja `--no-install` tylko buduje. Dane builda: `~/Library/Developer/Xcode/DerivedData/Atoll-local`.
 
 `scripts/install-local.sh` podpisuje aplikację lokalnym certyfikatem „Atoll Local Signing” (osobny pęk kluczy `~/Library/Keychains/atoll-signing.keychain-db`), podmienia `/Applications/Atoll.app` i uruchamia ją ponownie. Stały podpis sprawia, że uprawnienie **Dostępność** nadane raz zostaje przy kolejnych wersjach.
 

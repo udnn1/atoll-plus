@@ -454,6 +454,20 @@ struct ContentView: View {
             && !isClaudeLimitPinned
     }
 
+    private func notchScreenMenuCut(islandWidth: CGFloat) -> CGFloat {
+        guard vm.notchState == .closed,
+              !isNonNotchScreen,
+              !(isClaudeLimitPinned && claudeLimitService.activityOffset != nil),
+              let menusRightEdge = menuBarLayout.appMenusRightEdge,
+              let screen = NSScreen.screens.first(where: { $0.localizedName == currentScreenName }),
+              let left = screen.auxiliaryTopLeftArea?.width,
+              let right = screen.auxiliaryTopRightArea?.width else { return 0 }
+        let physical = screen.frame.width - left - right
+        let islandLeft = screen.frame.midX - islandWidth / 2
+        guard islandWidth > physical, menusRightEdge + MenuBarLayout.clearanceGap > islandLeft else { return 0 }
+        return (islandWidth - physical) / 2
+    }
+
     private var claudeLimitOffset: CGFloat {
         isClaudeLimitPinned ? (claudeLimitService.activityOffset ?? 0) : 0
     }
@@ -675,6 +689,11 @@ struct ContentView: View {
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
             .background(.black)
             .clipShape(resolvedClipShape)
+            .mask {
+                GeometryReader { geo in
+                    Rectangle().padding(.leading, notchScreenMenuCut(islandWidth: geo.size.width))
+                }
+            }
             // Keep the anti-gap fill outside the clipped notch. The window sits
             // this far above screen.maxY, so placing the spacer after clipShape
             // leaves the notch's top corners anchored to the visible screen edge.
