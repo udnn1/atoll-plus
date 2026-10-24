@@ -446,6 +446,7 @@ struct ContentView: View {
             && isNonNotchScreen
             && vm.notchState == .closed
             && !isSneakPeekVisibleOnCurrentScreen
+            && !isCurrentScreenExpansionVisible
             && !isConnectivityHUDVisible
     }
 
