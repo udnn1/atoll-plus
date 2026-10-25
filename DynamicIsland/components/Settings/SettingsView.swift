@@ -58,6 +58,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
     case hudAndOSD
     case battery
     case trackpad
+    case keyboard
     case stats
     case clipboard
     case screenAssistant
@@ -76,7 +77,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general, .appearance:                                          return .core
         case .media, .liveActivities, .lockScreen, .devices:                 return .mediaAndDisplay
-        case .hudAndOSD, .battery, .trackpad:                                return .system
+        case .hudAndOSD, .battery, .trackpad, .keyboard:                     return .system
         case .timer, .calendar, .notes:                                      return .productivity
         case .clipboard, .screenAssistant, .colorPicker, .shelf,
              .downloads, .shortcuts:                                         return .utilities
@@ -100,6 +101,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .hudAndOSD: return String(localized: "Controls")
         case .battery: return String(localized: "Battery")
         case .trackpad: return "Gładzik"
+        case .keyboard: return "Klawiatura"
         case .stats: return String(localized: "Stats")
         case .clipboard: return String(localized: "Clipboard")
         case .screenAssistant: return String(localized: "Screen Assistant")
@@ -127,6 +129,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .hudAndOSD: return "dial.medium.fill"
         case .battery: return "battery.100.bolt"
         case .trackpad: return "rectangle.and.hand.point.up.left"
+        case .keyboard: return "keyboard"
         case .stats: return "chart.xyaxis.line"
         case .clipboard: return "clipboard"
         case .screenAssistant: return "brain.head.profile"
@@ -154,6 +157,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .hudAndOSD: return .indigo
         case .battery: return Color(red: 0.202, green: 0.783, blue: 0.348, opacity: 1.000)
         case .trackpad: return Color(red: 0.35, green: 0.45, blue: 0.95, opacity: 1.000)
+        case .keyboard: return Color(red: 0.55, green: 0.55, blue: 0.6, opacity: 1.000)
         case .stats: return .teal
         case .clipboard: return .mint
         case .screenAssistant: return .pink
@@ -811,6 +815,7 @@ struct SettingsView: View {
             .hudAndOSD,
             .battery,
             .trackpad,
+            .keyboard,
             // Productivity
             .timer,
             .calendar,
@@ -1073,6 +1078,8 @@ struct SettingsView: View {
             }
         case .trackpad:
             TrackpadGesturesSettingsPane()
+        case .keyboard:
+            KeyboardRemapSettingsView()
         case .stats:
             SettingsForm(tab: .stats) {
                 StatsSettings()
@@ -1201,14 +1208,7 @@ struct GeneralSettings: View {
                     Text("Menubar icon")
                 }
                 .settingsHighlight(id: highlightID("Menubar icon"))
-                Defaults.Toggle(key: .enableKeyboardRemap) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Mapowanie klawiszy")
-                        Text("Lewy Cmd ↔ lewy Ctrl, prawy Cmd ↔ prawy Option, Caps Lock bez opóźnienia. Przywracane po podłączeniu klawiatury i wybudzeniu Maca.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+
                 LaunchAtLogin.Toggle {
                     Text("Launch at login")
                 }

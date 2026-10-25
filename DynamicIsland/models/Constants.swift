@@ -1284,6 +1284,8 @@ extension Defaults.Keys {
     static let claudeLimitMetric = Key<String>("claudeLimitMetric", default: "five")
     static let claudeLimitShowRing = Key<Bool>("claudeLimitShowRing", default: true)
     static let enableKeyboardRemap = Key<Bool>("enableKeyboardRemap", default: true)
+    static let keyboardRemapPairs = Key<[KeyRemapPair]>("keyboardRemapPairs", default: KeyRemapPair.defaults)
+    static let capsLockNoDelay = Key<Bool>("capsLockNoDelay", default: true)
     static let enableClaudeProvider = Key<Bool>("enableClaudeProvider", default: true)
     static let enableCodexProvider = Key<Bool>("enableCodexProvider", default: true)
     static let enableCursorProvider = Key<Bool>("enableCursorProvider", default: true)

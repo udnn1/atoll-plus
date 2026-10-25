@@ -29,7 +29,7 @@ Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Track
 ### Mapowanie klawiszy (zamiast Karabiner-Elements i keymapd)
 - `managers/KeyboardRemapper.swift` przy starcie Atolla ustawia przez `/usr/bin/hidutil`: lewy Cmd ↔ lewy Ctrl, prawy Cmd ↔ prawy Option oraz `CapsLockDelayOverride = 0` (Caps Lock bez opóźnienia).
 - Mapowanie jest ponawiane po podłączeniu każdej klawiatury (powiadomienie IOKit o nowym `IOHIDEventService`, np. ponowne połączenie MX Keys przez Bluetooth), po wybudzeniu i po powrocie do sesji.
-- Włącznik: **Ustawienia → Ogólne → Mapowanie klawiszy**. Wyłączenie czyści zamianę klawiszy.
+- Konfiguracja: **Ustawienia → Klawiatura**. Lista zamian „klawisz → klawisz” z wyborem z listy (lewy/prawy Control, Shift, Option, Command, Caps Lock, Escape, Tab, Return, Delete, ` , § i Fn), dodawanie i usuwanie zamian, „Przywróć domyślne” oraz przełączniki „Mapowanie klawiszy” i „Caps Lock bez opóźnienia”. Zmiany działają od razu. Zamiany są zapisane w ustawieniach Atolla (`keyboardRemapPairs`).
 - Działa bez przechwytywania klawiatury, więc nie hamuje systemu jak Karabiner.
 
 ### Poprawki błędów

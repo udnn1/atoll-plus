@@ -20,17 +20,78 @@ import AppKit
 import Combine
 import Defaults
 import IOKit
+import SwiftUI
+
+struct KeyRemapPair: Codable, Hashable, Identifiable, Defaults.Serializable {
+    var id = UUID()
+    var from: UInt64
+    var to: UInt64
+
+    static let defaults: [KeyRemapPair] = [
+        KeyRemapPair(from: RemappableKey.leftCommand.usage, to: RemappableKey.leftControl.usage),
+        KeyRemapPair(from: RemappableKey.leftControl.usage, to: RemappableKey.leftCommand.usage),
+        KeyRemapPair(from: RemappableKey.rightCommand.usage, to: RemappableKey.rightOption.usage),
+        KeyRemapPair(from: RemappableKey.rightOption.usage, to: RemappableKey.rightCommand.usage)
+    ]
+}
+
+enum RemappableKey: CaseIterable, Identifiable {
+    case leftControl, leftShift, leftOption, leftCommand
+    case rightControl, rightShift, rightOption, rightCommand
+    case capsLock, escape, tab, returnKey, delete, grave, section, fn
+
+    var id: UInt64 { usage }
+
+    var usage: UInt64 {
+        switch self {
+        case .leftControl: return 0x7000000E0
+        case .leftShift: return 0x7000000E1
+        case .leftOption: return 0x7000000E2
+        case .leftCommand: return 0x7000000E3
+        case .rightControl: return 0x7000000E4
+        case .rightShift: return 0x7000000E5
+        case .rightOption: return 0x7000000E6
+        case .rightCommand: return 0x7000000E7
+        case .capsLock: return 0x700000039
+        case .escape: return 0x700000029
+        case .tab: return 0x70000002B
+        case .returnKey: return 0x700000028
+        case .delete: return 0x70000002A
+        case .grave: return 0x700000035
+        case .section: return 0x700000064
+        case .fn: return 0xFF00000003
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .leftControl: return "Lewy Control"
+        case .leftShift: return "Lewy Shift"
+        case .leftOption: return "Lewy Option"
+        case .leftCommand: return "Lewy Command"
+        case .rightControl: return "Prawy Control"
+        case .rightShift: return "Prawy Shift"
+        case .rightOption: return "Prawy Option"
+        case .rightCommand: return "Prawy Command"
+        case .capsLock: return "Caps Lock"
+        case .escape: return "Escape"
+        case .tab: return "Tab"
+        case .returnKey: return "Return"
+        case .delete: return "Delete"
+        case .grave: return "` (obok 1)"
+        case .section: return "§ (ISO)"
+        case .fn: return "Fn / Globe"
+        }
+    }
+
+    static func title(for usage: UInt64) -> String {
+        allCases.first(where: { $0.usage == usage })?.title ?? String(format: "0x%llX", usage)
+    }
+}
 
 @MainActor
 final class KeyboardRemapper {
     static let shared = KeyboardRemapper()
-
-    private static let mapping: [(UInt64, UInt64)] = [
-        (0x7000000E3, 0x7000000E0),
-        (0x7000000E0, 0x7000000E3),
-        (0x7000000E7, 0x7000000E6),
-        (0x7000000E6, 0x7000000E7)
-    ]
 
     private var notificationPort: IONotificationPortRef?
     private var iterator: io_iterator_t = 0
@@ -44,10 +105,8 @@ final class KeyboardRemapper {
         guard !started else { return }
         started = true
 
-        Defaults.publisher(.enableKeyboardRemap).sink { [weak self] change in
-            Task { @MainActor in
-                if change.newValue { self?.apply() } else { self?.clear() }
-            }
+        Defaults.publisher(keys: .enableKeyboardRemap, .keyboardRemapPairs, .capsLockNoDelay).sink { [weak self] _ in
+            Task { @MainActor in self?.apply() }
         }.store(in: &cancellables)
 
         let center = NSWorkspace.shared.notificationCenter
@@ -59,6 +118,7 @@ final class KeyboardRemapper {
         }.store(in: &cancellables)
 
         installDeviceWatcher()
+        apply()
     }
 
     private func installDeviceWatcher() {
@@ -82,7 +142,6 @@ final class KeyboardRemapper {
     }
 
     private func scheduleApply() {
-        guard Defaults[.enableKeyboardRemap] else { return }
         pendingApply?.cancel()
         let item = DispatchWorkItem { [weak self] in
             Task { @MainActor in self?.apply() }
@@ -92,23 +151,91 @@ final class KeyboardRemapper {
     }
 
     private func apply() {
-        guard Defaults[.enableKeyboardRemap] else { return }
-        let entries = Self.mapping.map {
-            "{\"HIDKeyboardModifierMappingSrc\":\($0.0),\"HIDKeyboardModifierMappingDst\":\($0.1)}"
+        let enabled = Defaults[.enableKeyboardRemap]
+        let pairs = enabled ? Defaults[.keyboardRemapPairs].filter { $0.from != $0.to } : []
+        let entries = pairs.map {
+            "{\"HIDKeyboardModifierMappingSrc\":\($0.from),\"HIDKeyboardModifierMappingDst\":\($0.to)}"
         }.joined(separator: ",")
-        runHidutil("{\"CapsLockDelayOverride\":0,\"UserKeyMapping\":[\(entries)]}")
-    }
-
-    private func clear() {
-        runHidutil("{\"UserKeyMapping\":[]}")
-    }
-
-    private func runHidutil(_ json: String) {
+        var json = "{\"UserKeyMapping\":[\(entries)]"
+        if enabled && Defaults[.capsLockNoDelay] {
+            json += ",\"CapsLockDelayOverride\":0"
+        }
+        json += "}"
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/bin/hidutil")
         task.arguments = ["property", "--set", json]
         task.standardOutput = FileHandle.nullDevice
         task.standardError = FileHandle.nullDevice
         try? task.run()
+    }
+}
+
+struct KeyboardRemapSettingsView: View {
+    @Default(.enableKeyboardRemap) private var enabled
+    @Default(.keyboardRemapPairs) private var pairs
+    @Default(.capsLockNoDelay) private var capsNoDelay
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Mapowanie klawiszy", isOn: $enabled)
+                Toggle("Caps Lock bez opóźnienia", isOn: $capsNoDelay)
+                    .disabled(!enabled)
+            } footer: {
+                Text("Działa przez systemowe narzędzie hidutil, bez przechwytywania klawiatury. Mapowanie jest przywracane po podłączeniu klawiatury i wybudzeniu Maca. Po wyłączeniu „Caps Lock bez opóźnienia” systemowe opóźnienie wraca po ponownym zalogowaniu.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Zamiany klawiszy") {
+                ForEach($pairs) { $pair in
+                    HStack(spacing: 10) {
+                        keyPicker(selection: $pair.from)
+                        Image(systemName: "arrow.right")
+                            .foregroundStyle(.secondary)
+                        keyPicker(selection: $pair.to)
+                        Button {
+                            pairs.removeAll { $0.id == pair.id }
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundStyle(.red)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Usuń zamianę")
+                    }
+                    .disabled(!enabled)
+                }
+                if pairs.isEmpty {
+                    Text("Brak zamian.")
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Button("Dodaj zamianę") {
+                        pairs.append(KeyRemapPair(from: RemappableKey.capsLock.usage, to: RemappableKey.escape.usage))
+                    }
+                    Spacer()
+                    Button("Przywróć domyślne") {
+                        pairs = KeyRemapPair.defaults
+                        capsNoDelay = true
+                    }
+                }
+                .disabled(!enabled)
+            }
+        }
+        .formStyle(.grouped)
+        .navigationTitle("Klawiatura")
+    }
+
+    private func keyPicker(selection: Binding<UInt64>) -> some View {
+        Picker("", selection: selection) {
+            ForEach(RemappableKey.allCases) { key in
+                Text(key.title).tag(key.usage)
+            }
+            if !RemappableKey.allCases.contains(where: { $0.usage == selection.wrappedValue }) {
+                Text(RemappableKey.title(for: selection.wrappedValue)).tag(selection.wrappedValue)
+            }
+        }
+        .labelsHidden()
+        .frame(maxWidth: .infinity)
     }
 }
