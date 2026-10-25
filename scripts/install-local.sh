@@ -30,6 +30,9 @@ FRONT_APP="$(lsappinfo info -only bundleid "$(lsappinfo front)" 2>/dev/null | gr
 open -g "$APP_DEST"
 if [[ -n "$FRONT_APP" && "$FRONT_APP" != "com.Ebullioscopic.Atoll" ]]; then
   sleep 2
-  open -b "$FRONT_APP" 2>/dev/null || true
+  NOW_APP="$(lsappinfo info -only bundleid "$(lsappinfo front)" 2>/dev/null | grep -o 'bundleID="[^"]*"' | cut -d'"' -f2 || true)"
+  if [[ "$NOW_APP" != "$FRONT_APP" ]]; then
+    open -b "$FRONT_APP" 2>/dev/null || true
+  fi
 fi
 echo "Zainstalowano: $(codesign -dv "$APP_DEST" 2>&1 | grep Authority || echo podpisane)"

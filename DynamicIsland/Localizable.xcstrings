@@ -33378,8 +33378,8 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable colored spectrograms"
+            "state": "translated",
+            "value": "Włącz kolorowe spektrogramy"
           }
         },
         "pt-BR": {
@@ -34050,8 +34050,8 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable haptics"
+            "state": "translated",
+            "value": "Włącz haptykę"
           }
         },
         "pt-BR": {
@@ -40702,7 +40702,7 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Gradient"
           }
         },
@@ -51445,8 +51445,8 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Menubar icon"
+            "state": "translated",
+            "value": "Ikona na pasku menu"
           }
         },
         "pt-BR": {
@@ -73446,8 +73446,8 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Show battery indicator"
+            "state": "translated",
+            "value": "Pokazuj wskaźnik baterii"
           }
         },
         "pt-BR": {
@@ -73955,8 +73955,8 @@
         },
         "pl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Show cool face animation while inactivity"
+            "state": "translated",
+            "value": "Pokazuj animację buźki podczas bezczynności"
           }
         },
         "pt-BR": {
@@ -87326,7 +87326,7 @@
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Usage"
+            "value": "Limity"
           }
         }
       }
