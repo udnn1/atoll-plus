@@ -157,6 +157,8 @@ struct SlidrSettingsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Toggle(slidrL("enable_app_toggle"), isOn: binding(\.isAppEnabled))
                     Divider()
+                    HapticStrengthRow()
+                    Divider()
                     HStack {
                         Text(slidrL("recent_touch"))
                         Spacer()

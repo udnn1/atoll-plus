@@ -1,12 +1,29 @@
 import AppKit
 import Foundation
+import SwiftUI
 
 final class TrackpadHaptics: @unchecked Sendable {
     static let shared = TrackpadHaptics()
 
-    enum Pattern: Int32 {
-        case step = 2
-        case confirm = 4
+    enum Pattern {
+        case step
+        case confirm
+    }
+
+    static let strengthKey = "trackpadHapticStrength"
+    static let strengthRange = 1...6
+
+    static var strength: Int {
+        let stored = UserDefaults.standard.integer(forKey: strengthKey)
+        return strengthRange.contains(stored) ? stored : 2
+    }
+
+    private func actuationID(for pattern: Pattern) -> Int32 {
+        let base = Self.strength
+        switch pattern {
+        case .step: return Int32(base)
+        case .confirm: return Int32(min(base + 2, Self.strengthRange.upperBound))
+        }
     }
 
     private typealias DeviceCreateDefault = @convention(c) () -> OpaquePointer?
@@ -70,7 +87,7 @@ final class TrackpadHaptics: @unchecked Sendable {
         var done = false
         if let actuate, let target = preparedActuator() {
             if let isOpen, let open, !isOpen(target) { _ = open(target) }
-            if actuate(target, pattern.rawValue, 0, 0, 0) == 0 {
+            if actuate(target, actuationID(for: pattern), 0, 0, 0) == 0 {
                 failures = 0
                 done = true
             } else {
@@ -85,6 +102,32 @@ final class TrackpadHaptics: @unchecked Sendable {
         guard !done else { return }
         DispatchQueue.main.async {
             NSHapticFeedbackManager.defaultPerformer.perform(pattern == .step ? .levelChange : .alignment, performanceTime: .now)
+        }
+    }
+}
+
+struct HapticStrengthRow: View {
+    @AppStorage(TrackpadHaptics.strengthKey) private var strength = 2
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Siła haptyki")
+                Spacer()
+                Text("\(strength) / \(TrackpadHaptics.strengthRange.upperBound)")
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                Button("Wypróbuj") { TrackpadHaptics.shared.perform(.step) }
+            }
+            Slider(
+                value: Binding(get: { Double(strength) }, set: { strength = Int($0.rounded()) }),
+                in: Double(TrackpadHaptics.strengthRange.lowerBound)...Double(TrackpadHaptics.strengthRange.upperBound),
+                step: 1
+            )
+            .onChange(of: strength) { _, _ in TrackpadHaptics.shared.perform(.step) }
+            Text("Siła tyknięcia przy każdym kroku głośności, jasności i karty. Otwarcie aplikacji z rogu daje tyknięcie o 2 poziomy mocniejsze.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }
