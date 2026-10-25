@@ -463,8 +463,8 @@ struct ContentView: View {
               let left = screen.auxiliaryTopLeftArea?.width,
               let right = screen.auxiliaryTopRightArea?.width else { return 0 }
         let physical = screen.frame.width - left - right
-        let islandLeft = screen.frame.midX - islandWidth / 2
-        guard islandWidth > physical, menusRightEdge + MenuBarLayout.clearanceGap > islandLeft else { return 0 }
+        let physicalLeft = screen.frame.midX - physical / 2
+        guard islandWidth > physical, menusRightEdge + MenuBarLayout.clearanceGap > physicalLeft - 60 else { return 0 }
         return (islandWidth - physical) / 2
     }
 
