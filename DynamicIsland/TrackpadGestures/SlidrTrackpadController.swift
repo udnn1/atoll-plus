@@ -105,9 +105,9 @@ final class SlidrTrackpadController {
         guard case .success = result else { return }
         switch action {
         case .adjustVolume, .adjustBrightness, .switchBrowserTab:
-            NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
+            TrackpadHaptics.shared.perform(.step)
         case .toggleApplication:
-            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            TrackpadHaptics.shared.perform(.confirm)
         case .middleClick:
             break
         }
@@ -125,6 +125,7 @@ struct TrackpadGesturesSettingsPane: View {
             gestureTestController: controller.gestureTestController
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("Gładzik")
     }
 }
