@@ -645,7 +645,7 @@ struct SettingsView: View {
                             }
                         } header: {
                             if let title = section.group.title {
-                                Text(title)
+                                Text(LocalizedStringKey(title))
                             }
                         }
                     }
@@ -1214,7 +1214,7 @@ struct GeneralSettings: View {
                 .settingsHighlight(id: highlightID("Show on all displays"))
                 Picker("Show on a specific display", selection: $coordinator.preferredScreen) {
                     ForEach(screens, id: \.self) { screen in
-                        Text(screen)
+                        Text(LocalizedStringKey(screen))
                     }
                 }
                 .onChange(of: NSScreen.screens) {
@@ -1252,7 +1252,7 @@ struct GeneralSettings: View {
 
                 Picker("Default duration", selection: $caffeinateDefaultDuration) {
                     ForEach(CaffeinateDuration.allCases) { duration in
-                        Text(duration.displayName).tag(duration)
+                        Text(LocalizedStringKey(duration.displayName)).tag(duration)
                     }
                 }
                 .disabled(!enableCaffeinate)
@@ -1370,7 +1370,7 @@ struct GeneralSettings: View {
                     ) { $0.displayName }
                     .settingsHighlight(id: highlightID("Gesture skip behavior"))
 
-                    Text(musicGestureBehavior.description)
+                    Text(LocalizedStringKey(musicGestureBehavior.description))
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
@@ -1442,7 +1442,7 @@ struct GeneralSettings: View {
             }
             Picker("External display style", selection: $externalDisplayStyle) {
                 ForEach(ExternalDisplayStyle.allCases) { style in
-                    Text(style.localizedName)
+                    Text(LocalizedStringKey(style.localizedName))
                         .tag(style)
                 }
             }
@@ -1450,7 +1450,7 @@ struct GeneralSettings: View {
                 NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
             }
             .settingsHighlight(id: highlightID("External display style"))
-            Text(externalDisplayStyle.description)
+            Text(LocalizedStringKey(externalDisplayStyle.description))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Defaults.Toggle(key: .hideNonNotchUntilHover) {
@@ -1819,7 +1819,7 @@ struct Downloads: View {
                     }
                 }
 
-                Text(style.rawValue)
+                Text(LocalizedStringKey(style.rawValue))
                     .font(.caption)
                     .fontWeight(.medium)
                     .lineLimit(2)
@@ -2268,7 +2268,7 @@ private struct HUDAndOSDSettingsView: View {
                         Toggle("Interactive (Drag to Change)", isOn: $verticalHUDInteractive)
                         Picker("Material", selection: $verticalHUDMaterial) {
                             ForEach(availableVerticalMaterials, id: \.self) { material in
-                                Text(material.rawValue).tag(material)
+                                Text(LocalizedStringKey(material.rawValue)).tag(material)
                             }
                         }
 
@@ -2618,7 +2618,7 @@ private struct ExternalDisplayIntegrationsSection: View {
                                     symbolFallback: "display",
                                     symbolColor: .secondary
                                 )
-                                Text(provider.displayName)
+                                Text(LocalizedStringKey(provider.displayName))
                             }
                             .tag(provider)
                         }
@@ -2639,12 +2639,12 @@ private struct ExternalDisplayIntegrationsSection: View {
                     HStack {
                         Text("Status")
                         Spacer()
-                        Text(providerStatusText)
+                        Text(LocalizedStringKey(providerStatusText))
                             .font(.caption)
                             .foregroundStyle(providerStatusColor)
                     }
 
-                    Text(providerStatusDescription)
+                    Text(LocalizedStringKey(providerStatusDescription))
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
@@ -2699,7 +2699,7 @@ private struct HUDSelectionCard<Preview: View>: View {
                 .frame(width: 110, height: 80)
 
                 VStack(spacing: 4) {
-                    Text(title)
+                    Text(LocalizedStringKey(title))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(isSelected ? .primary : .secondary)
 
@@ -3060,7 +3060,7 @@ private struct MusicSourceCard: View {
                 .font(.system(size: 24, weight: .semibold))
                 .frame(width: 42, height: 42)
 
-                Text(controller.localizedName)
+                Text(LocalizedStringKey(controller.localizedName))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -3247,7 +3247,7 @@ struct Media: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(String(localized: "'Now Playing' was the only option on previous versions and works with all media apps."))
                         if mediaController == .amazonMusic || mediaController == .tidal || mediaController == .cider {
-                            Text(mediaController.description)
+                            Text(LocalizedStringKey(mediaController.description))
                         }
                     }
                     .foregroundStyle(.secondary)
@@ -3347,7 +3347,7 @@ struct Media: View {
                 ) { $0.displayName }
                 .settingsHighlight(id: highlightID("Skip buttons"))
 
-                Text(musicSkipBehavior.description)
+                Text(LocalizedStringKey(musicSkipBehavior.description))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } header: {
@@ -3398,7 +3398,7 @@ struct Media: View {
                             items: Array(LyricHighlightStyle.allCases)
                         ) { $0.localizedName }
 
-                        Text(lyricHighlightStyle.explanation)
+                        Text(LocalizedStringKey(lyricHighlightStyle.explanation))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -3490,7 +3490,7 @@ struct Media: View {
                 
                 Picker("Sneak Peek Style", selection: $sneakPeekStyles){
                     ForEach(SneakPeekStyle.allCases) { style in
-                        Text(style.localizedName).tag(style)
+                        Text(LocalizedStringKey(style.localizedName)).tag(style)
                     }
                 }
                 .disabled(!enableSneakPeek)
@@ -3887,7 +3887,7 @@ struct CalendarSettings: View {
                             Spacer(minLength: 0)
                             Picker("", selection: $lockScreenCalendarEventLookaheadWindow) {
                                 ForEach(CalendarLookaheadOption.allCases) { option in
-                                    Text(option.title).tag(option.rawValue)
+                                    Text(LocalizedStringKey(option.title)).tag(option.rawValue)
                                 }
                             }
                             .labelsHidden()
@@ -3938,7 +3938,7 @@ struct CalendarSettings: View {
                                         Circle()
                                             .fill(Color(calendar.color))
                                             .frame(width: 8, height: 8)
-                                        Text(calendar.title)
+                                        Text(LocalizedStringKey(calendar.title))
                                     }
                                 }
                             }
@@ -4029,7 +4029,7 @@ struct CalendarSettings: View {
                                         symbolFallback: app.fallbackIconName,
                                         symbolColor: app.fallbackIconColor
                                     )
-                                    Text(app.displayName)
+                                    Text(LocalizedStringKey(app.displayName))
                                 }
                                 .tag(app)
                             }
@@ -4039,7 +4039,7 @@ struct CalendarSettings: View {
                         if selectedCalendarApp == .fantastical {
                             Picker("Default View", selection: $fantasticalDefaultView) {
                                 ForEach(FantasticalViewStyle.allCases, id: \.self) { style in
-                                    Text(style.displayName).tag(style)
+                                    Text(LocalizedStringKey(style.displayName)).tag(style)
                                 }
                             }
                             .settingsHighlight(id: highlightID("Fantastical Default View"))
@@ -4060,7 +4060,7 @@ struct CalendarSettings: View {
                         let allAccountSelected = accountCalendars.allSatisfy { calendarManager.getCalendarSelected($0) }
 
                         Section(header: HStack {
-                            Text(account)
+                            Text(LocalizedStringKey(account))
                             Spacer()
                             Toggle("", isOn: Binding(
                                 get: { allAccountSelected },
@@ -4088,7 +4088,7 @@ struct CalendarSettings: View {
                                         Circle()
                                             .fill(Color(calendar.color))
                                             .frame(width: 8, height: 8)
-                                        Text(calendar.title)
+                                        Text(LocalizedStringKey(calendar.title))
                                     }
                                 }
                                 .disabled(!showCalendar)
@@ -4149,7 +4149,7 @@ struct About: View {
                         Spacer()
 
                         // Channel badge
-                        Text(UpdateChannel.buildChannel.displayName)
+                        Text(LocalizedStringKey(UpdateChannel.buildChannel.displayName))
                             .font(.caption2)
                             .fontWeight(.semibold)
                             .padding(.horizontal, 6)
@@ -4228,9 +4228,9 @@ struct About: View {
                                     .frame(width: 20, alignment: .center)
 
                                 VStack(alignment: .leading, spacing: 1) {
-                                    Text(channel.displayName)
+                                    Text(LocalizedStringKey(channel.displayName))
                                         .foregroundStyle(.primary)
-                                    Text(channel.description)
+                                    Text(LocalizedStringKey(channel.description))
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                 }
@@ -4318,7 +4318,7 @@ private extension DevicesSettingsView {
                     }
                 }
 
-                Text(style.title)
+                Text(LocalizedStringKey(style.title))
                     .font(.caption)
                     .fontWeight(.medium)
             }
@@ -4524,7 +4524,7 @@ struct Shelf: View {
                     ForEach(quickShareService.availableProviders, id: \.id) { provider in
                         HStack {
                             QuickShareProviderIconImage(provider: provider, size: 16)
-                            Text(provider.id)
+                            Text(LocalizedStringKey(provider.id))
                         }
                         .tag(provider.id)
                     }
@@ -4581,7 +4581,7 @@ private struct LocalSendSettingsSection: View {
         Section {
             Picker("Device Picker Style", selection: $glassMode) {
                 ForEach(LockScreenGlassCustomizationMode.allCases) { mode in
-                    Text(mode.localizedName).tag(mode)
+                    Text(LocalizedStringKey(mode.localizedName)).tag(mode)
                 }
             }
             .pickerStyle(.menu)
@@ -4954,7 +4954,7 @@ struct Appearance: View {
                 Section {
                     Picker("Main screen style", selection: $externalDisplayStyle) {
                         ForEach(ExternalDisplayStyle.allCases) { style in
-                            Text(style.localizedName)
+                            Text(LocalizedStringKey(style.localizedName))
                                 .tag(style)
                         }
                     }
@@ -4962,7 +4962,7 @@ struct Appearance: View {
                         NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
                     }
                     .settingsHighlight(id: highlightID("Main screen style"))
-                    Text(externalDisplayStyle.description)
+                    Text(LocalizedStringKey(externalDisplayStyle.description))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {
@@ -4986,7 +4986,7 @@ struct Appearance: View {
                 .settingsHighlight(id: highlightID("Enable blur effect behind album art"))
                 Picker("Slider color", selection: $sliderColor) {
                     ForEach(SliderColorEnum.allCases, id: \.self) { option in
-                        Text(option.localizedName)
+                        Text(LocalizedStringKey(option.localizedName))
                     }
                 }
                 .settingsHighlight(id: highlightID("Slider color"))
@@ -5010,7 +5010,7 @@ struct Appearance: View {
                                 customVisualizers,
                                 id: \.self
                             ) { visualizer in
-                                Text(visualizer.name)
+                                Text(LocalizedStringKey(visualizer.name))
                                     .tag(visualizer)
                             }
                         }
@@ -5036,7 +5036,7 @@ struct Appearance: View {
                         HStack {
                             LottieView(state: LUStateData(type: .loadedFrom(visualizer.url), speed: visualizer.speed, loopMode: .loop))
                                 .frame(width: 30, height: 30, alignment: .center)
-                            Text(visualizer.name)
+                            Text(LocalizedStringKey(visualizer.name))
                             Spacer(minLength: 0)
                             if selectedVisualizer == visualizer {
                                 Text("selected")
@@ -5179,7 +5179,7 @@ struct Appearance: View {
                 if webcamManager.cameraAvailable {
                     Picker("Mirror Camera", selection: $selectedCameraID) {
                         ForEach(webcamManager.availableCameras, id: \.uniqueID) { device in
-                            Text(device.localizedName)
+                            Text(LocalizedStringKey(device.localizedName))
                                 .tag(device.uniqueID)
                         }
                     }
@@ -5264,7 +5264,7 @@ struct Appearance: View {
                     }
 
                     if let iconImportError {
-                        Text(iconImportError)
+                        Text(LocalizedStringKey(iconImportError))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
@@ -5330,7 +5330,7 @@ struct Appearance: View {
                         .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 2)
                 )
 
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.caption)
                     .lineLimit(1)
                     .foregroundStyle(isSelected ? .white : .secondary)
@@ -5501,7 +5501,7 @@ struct Appearance: View {
                 ? String(localized: "Expanded width adjustments apply only to the standard notch layout. Disable Minimalistic UI to edit this value.")
                 : String(localized: "Recommended minimum width adjusts automatically based on the number of enabled tabs.")
 
-                Text(description)
+                Text(LocalizedStringKey(description))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -5846,8 +5846,8 @@ struct LockScreenSettings: View {
                     Picker("Siri detection speed", selection: $siriResponsivenessMode) {
                         ForEach(SiriResponsivenessMode.allCases) { mode in
                             VStack(alignment: .leading) {
-                                Text(mode.displayName)
-                                Text(mode.description)
+                                Text(LocalizedStringKey(mode.displayName))
+                                Text(LocalizedStringKey(mode.description))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }.tag(mode)
@@ -5864,14 +5864,14 @@ struct LockScreenSettings: View {
                     if #available(macOS 26.0, *) {
                         Picker("Material", selection: $lockScreenGlassStyle) {
                             ForEach(LockScreenGlassStyle.allCases) { style in
-                                Text(style.localizedName).tag(style)
+                                Text(LocalizedStringKey(style.localizedName)).tag(style)
                             }
                         }
                         .settingsHighlight(id: highlightID("Material"))
                     } else {
                         Picker("Material", selection: $lockScreenGlassStyle) {
                             ForEach(LockScreenGlassStyle.allCases) { style in
-                                Text(style.localizedName).tag(style)
+                                Text(LocalizedStringKey(style.localizedName)).tag(style)
                             }
                         }
                         .disabled(true)
@@ -6058,7 +6058,7 @@ struct LockScreenSettings: View {
                     if timerGlassModeIsGlass {
                         Picker("Timer glass material", selection: $lockScreenTimerGlassStyle) {
                             ForEach(LockScreenGlassStyle.allCases) { style in
-                                Text(style.localizedName).tag(style)
+                                Text(LocalizedStringKey(style.localizedName)).tag(style)
                             }
                         }
                         .disabled(!enableLockScreenTimerWidget)
@@ -6278,7 +6278,7 @@ struct LockScreenSettings: View {
                             Spacer(minLength: 0)
                             Picker("", selection: $lockScreenCalendarEventLookaheadWindow) {
                                 ForEach(CalendarLookaheadOption.allCases) { option in
-                                    Text(option.title).tag(option.rawValue)
+                                    Text(LocalizedStringKey(option.title)).tag(option.rawValue)
                                 }
                             }
                             .labelsHidden()
@@ -6329,7 +6329,7 @@ struct LockScreenSettings: View {
                                         Circle()
                                             .fill(Color(calendar.color))
                                             .frame(width: 8, height: 8)
-                                        Text(calendar.title)
+                                        Text(LocalizedStringKey(calendar.title))
                                     }
                                 }
                             }
@@ -6456,7 +6456,7 @@ extension LockScreenSettings {
     ) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(title)
+                Text(LocalizedStringKey(title))
                 Spacer()
                 Text("v\(currentValue)")
                     .font(.caption)
@@ -6500,7 +6500,7 @@ private struct LockScreenIconStyleCard: View {
                 }
                 .frame(width: 72, height: 50)
 
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.caption)
                     .fontWeight(.medium)
             }
@@ -6810,7 +6810,7 @@ private struct LockScreenPositioningControls: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(title)
+                Text(LocalizedStringKey(title))
                 Spacer()
                 Text(formattedWidth(value.wrappedValue))
                     .font(.caption)
@@ -6827,7 +6827,7 @@ private struct LockScreenPositioningControls: View {
 
                 Spacer()
 
-                Text(helpText)
+                Text(LocalizedStringKey(helpText))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.trailing)
@@ -7371,9 +7371,9 @@ func warningBadge(_ text: String, _ description: String) -> some View {
                 .font(.system(size: 22))
                 .foregroundStyle(.yellow)
             VStack(alignment: .leading) {
-                Text(text)
+                Text(LocalizedStringKey(text))
                     .font(.headline)
-                Text(description)
+                Text(LocalizedStringKey(description))
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -7510,7 +7510,7 @@ struct TimerSettings: View {
             if timerGlassModeIsGlass {
                 Picker("Timer glass material", selection: $lockScreenTimerGlassStyle) {
                     ForEach(LockScreenGlassStyle.allCases) { style in
-                        Text(style.localizedName).tag(style)
+                        Text(LocalizedStringKey(style.localizedName)).tag(style)
                     }
                 }
                 .disabled(!enableLockScreenTimerWidget)
@@ -7576,7 +7576,7 @@ struct TimerSettings: View {
                 HStack {
                     Text("Current default:")
                         .foregroundStyle(.secondary)
-                    Text(customDurationDisplay)
+                    Text(LocalizedStringKey(customDurationDisplay))
                         .font(.system(.body, design: .monospaced))
                         .fontWeight(.medium)
                     Spacer()
@@ -7795,7 +7795,7 @@ private struct TimerDurationStepperRow: View {
     var body: some View {
         Stepper(value: $value, in: range) {
             HStack {
-                Text(title)
+                Text(LocalizedStringKey(title))
                 Spacer()
                 Text("\(value)")
                     .font(.system(size: 12, weight: .semibold, design: .monospaced))
@@ -7910,7 +7910,7 @@ private struct TimerPresetEditorRow: View {
 
                 Spacer()
 
-                Text(preset.formattedDuration)
+                Text(LocalizedStringKey(preset.formattedDuration))
                     .font(.system(size: 12, weight: .medium, design: .monospaced))
                     .foregroundStyle(.secondary)
             }
@@ -7967,7 +7967,7 @@ private struct TimerPresetComponentControl: View {
     var body: some View {
         Stepper(value: $value, in: range) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text("\(value)")
@@ -8095,8 +8095,8 @@ struct StatsSettings: View {
                         ForEach(newAPIAccounts) { account in
                             HStack(spacing: 10) {
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(account.name)
-                                    Text(account.baseURL)
+                                    Text(LocalizedStringKey(account.name))
+                                    Text(LocalizedStringKey(account.baseURL))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                         .lineLimit(1)
@@ -8155,7 +8155,7 @@ struct StatsSettings: View {
                         HStack {
                             Text("Update interval")
                             Spacer()
-                            Text(formattedUpdateInterval)
+                            Text(LocalizedStringKey(formattedUpdateInterval))
                                 .foregroundStyle(.secondary)
                         }
 
@@ -8250,7 +8250,7 @@ struct StatsSettings: View {
                             HStack {
                                 Text("CPU Usage")
                                 Spacer()
-                                Text(statsManager.cpuUsageString)
+                                Text(LocalizedStringKey(statsManager.cpuUsageString))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -8259,7 +8259,7 @@ struct StatsSettings: View {
                             HStack {
                                 Text("Memory Usage")
                                 Spacer()
-                                Text(statsManager.memoryUsageString)
+                                Text(LocalizedStringKey(statsManager.memoryUsageString))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -8268,7 +8268,7 @@ struct StatsSettings: View {
                             HStack {
                                 Text("GPU Usage")
                                 Spacer()
-                                Text(statsManager.gpuUsageString)
+                                Text(LocalizedStringKey(statsManager.gpuUsageString))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -8422,7 +8422,7 @@ private struct NewAPIAccountEditor: View {
             .frame(width: 420)
 
             if let errorMessage {
-                Text(errorMessage)
+                Text(LocalizedStringKey(errorMessage))
                     .font(.caption)
                     .foregroundStyle(.red)
             }
@@ -8525,7 +8525,7 @@ struct ClipboardSettings: View {
                         Spacer()
                         Picker("", selection: $clipboardDisplayMode) {
                             ForEach(ClipboardDisplayMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
+                                Text(LocalizedStringKey(mode.displayName)).tag(mode)
                             }
                         }
                         .pickerStyle(.menu)
@@ -8608,7 +8608,7 @@ struct ClipboardSettings: View {
                                     Image(systemName: item.type.icon)
                                         .foregroundColor(.blue)
                                         .frame(width: 16)
-                                    Text(item.type.displayName)
+                                    Text(LocalizedStringKey(item.type.displayName))
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                     Spacer()
@@ -8616,7 +8616,7 @@ struct ClipboardSettings: View {
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 }
-                                Text(item.preview)
+                                Text(LocalizedStringKey(item.preview))
                                     .font(.system(.body, design: .monospaced))
                                     .lineLimit(2)
                             }
@@ -8739,7 +8739,7 @@ struct ScreenAssistantSettings: View {
                         Spacer()
                         Picker("", selection: $screenAssistantDisplayMode) {
                             ForEach(ScreenAssistantDisplayMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
+                                Text(LocalizedStringKey(mode.displayName)).tag(mode)
                             }
                         }
                         .pickerStyle(.menu)
@@ -8791,7 +8791,7 @@ struct ScreenAssistantSettings: View {
                                     Image(systemName: file.type.iconName)
                                         .foregroundColor(.blue)
                                         .frame(width: 16)
-                                    Text(file.type.displayName)
+                                    Text(LocalizedStringKey(file.type.displayName))
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                     Spacer()
@@ -8799,7 +8799,7 @@ struct ScreenAssistantSettings: View {
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 }
-                                Text(file.name)
+                                Text(LocalizedStringKey(file.name))
                                     .font(.system(.body, design: .monospaced))
                                     .lineLimit(2)
                             }
@@ -8870,7 +8870,7 @@ struct ColorPickerSettings: View {
                         Spacer()
                         Picker("", selection: $colorPickerDisplayMode) {
                             ForEach(ColorPickerDisplayMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
+                                Text(LocalizedStringKey(mode.displayName)).tag(mode)
                             }
                         }
                         .pickerStyle(.menu)
@@ -9036,7 +9036,7 @@ struct CustomOSDSettings: View {
                 Section {
                     Picker("Material", selection: $osdMaterial) {
                         ForEach(availableOSDMaterials, id: \.self) { material in
-                            Text(material.rawValue).tag(material)
+                            Text(LocalizedStringKey(material.rawValue)).tag(material)
                         }
                     }
                     .settingsHighlight(id: highlightID("Material"))
@@ -9073,7 +9073,7 @@ struct CustomOSDSettings: View {
 
                     Picker("Icon & Progress Color", selection: $osdIconColorStyle) {
                         ForEach(OSDIconColorStyle.allCases, id: \.self) { style in
-                            Text(style.rawValue).tag(style)
+                            Text(LocalizedStringKey(style.rawValue)).tag(style)
                         }
                     }
                     .settingsHighlight(id: highlightID("Icon & Progress Color"))
@@ -9302,7 +9302,7 @@ struct NotesSettingsView: View {
                         }
 
                         if let error = appleNotesSync.lastError {
-                            Text(error)
+                            Text(LocalizedStringKey(error))
                                 .font(.caption)
                                 .foregroundStyle(.red)
                         }
@@ -9418,7 +9418,7 @@ struct TerminalSettings: View {
                         Text("System Monospaced").tag("")
                         Divider()
                         ForEach(monospacedFontFamilies, id: \.self) { family in
-                            Text(family)
+                            Text(LocalizedStringKey(family))
                                 .font(.custom(family, size: 13))
                                 .tag(family)
                         }
@@ -9462,7 +9462,7 @@ struct TerminalSettings: View {
                         HStack {
                             Text("Maximum height")
                             Spacer()
-                            Text(formattedMaxHeight)
+                            Text(LocalizedStringKey(formattedMaxHeight))
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
                         }
@@ -9514,7 +9514,7 @@ struct TerminalSettings: View {
                 Section {
                     Picker("Cursor style", selection: cursorStyleBinding) {
                         ForEach(TerminalCursorStyleOption.allCases, id: \.self) { style in
-                            Text(style.displayName).tag(style)
+                            Text(LocalizedStringKey(style.displayName)).tag(style)
                         }
                     }
                     .onChange(of: terminalCursorStyle) { _, newValue in

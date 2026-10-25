@@ -55,12 +55,12 @@ struct SpotifyAuthSettingsSection: View {
                     .fill(spotifyAuthManager.isAuthenticated ? Color.green : (hasCookie ? Color.orange : Color.secondary))
                     .frame(width: 8, height: 8)
 
-                Text(spotifyAuthManager.sessionStatusText)
+                Text(LocalizedStringKey(spotifyAuthManager.sessionStatusText))
                     .foregroundStyle(.secondary)
             }
 
             if let authErrorMessage = spotifyAuthManager.authErrorMessage, !authErrorMessage.isEmpty {
-                Text(authErrorMessage)
+                Text(LocalizedStringKey(authErrorMessage))
                     .font(.caption)
                     .foregroundStyle(.red)
             }

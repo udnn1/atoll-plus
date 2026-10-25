@@ -316,7 +316,7 @@ struct AnimationPreviewCard: View {
             
             // Name and badge
             VStack(spacing: 4) {
-                Text(animation.name)
+                Text(LocalizedStringKey(animation.name))
                     .font(.caption)
                     .fontWeight(.medium)
                     .lineLimit(2)

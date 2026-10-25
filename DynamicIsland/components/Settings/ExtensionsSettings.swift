@@ -232,9 +232,9 @@ private struct ExtensionEntryRow: View {
                 
                 // App info
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(entry.appName)
+                    Text(LocalizedStringKey(entry.appName))
                         .font(.system(size: 13, weight: .medium))
-                    Text(entry.bundleIdentifier)
+                    Text(LocalizedStringKey(entry.bundleIdentifier))
                         .font(.system(size: 11))
                         .foregroundStyle(.secondary)
                 }
@@ -307,7 +307,7 @@ private struct ExtensionEntryRow: View {
                     Text("Status:")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Text(entry.status.rawValue.capitalized)
+                    Text(LocalizedStringKey(entry.status.rawValue.capitalized))
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
@@ -329,7 +329,7 @@ private struct ExtensionEntryRow: View {
                         Text("Last Denied Reason:")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
-                        Text(deniedReason)
+                        Text(LocalizedStringKey(deniedReason))
                             .font(.caption)
                             .foregroundStyle(.red.opacity(0.9))
                     }
@@ -544,7 +544,7 @@ private struct ExtensionEntryRow: View {
             Text("\(label):")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text(value)
+            Text(LocalizedStringKey(value))
                 .font(.caption)
         }
     }

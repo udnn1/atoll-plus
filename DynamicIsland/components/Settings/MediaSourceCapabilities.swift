@@ -141,7 +141,7 @@ struct MediaSourceCapabilitiesTable: View {
                     ForEach([String(localized: "Favorite"),
                              String(localized: "Shuffle"),
                              String(localized: "Repeat")], id: \.self) { title in
-                        Text(title).frame(width: columnWidth)
+                        Text(LocalizedStringKey(title)).frame(width: columnWidth)
                     }
                 }
                 .font(.system(size: 11, weight: .semibold))
@@ -151,14 +151,14 @@ struct MediaSourceCapabilitiesTable: View {
                 ForEach(rows) { row in
                     VStack(alignment: .leading, spacing: 3) {
                         HStack(spacing: 0) {
-                            Text(row.name)
+                            Text(LocalizedStringKey(row.name))
                                 .font(.system(size: 12, weight: .medium))
                                 .frame(width: 120, alignment: .leading)
                             cell(row.favoriting)
                             cell(row.shuffle)
                             cell(row.repeatMode)
                         }
-                        Text(row.note)
+                        Text(LocalizedStringKey(row.note))
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -197,7 +197,7 @@ struct MediaSourceCapabilitiesTable: View {
             Image(systemName: support.symbol)
                 .font(.system(size: 9))
                 .foregroundStyle(support.tint)
-            Text(text)
+            Text(LocalizedStringKey(text))
         }
     }
 }

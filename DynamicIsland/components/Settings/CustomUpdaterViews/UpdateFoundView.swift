@@ -84,7 +84,7 @@ struct UpdateFoundView: View {
                 HStack(spacing: 4) {
                     Image(systemName: channel.badgeIcon)
                         .font(.caption2)
-                    Text(channel.displayName)
+                    Text(LocalizedStringKey(channel.displayName))
                         .font(.caption2)
                         .fontWeight(.semibold)
                 }
@@ -100,7 +100,7 @@ struct UpdateFoundView: View {
             // Release notes (expandable)
             if showNotes, let html = state.releaseNotesHTML {
                 ScrollView {
-                    Text(html.strippingHTML)
+                    Text(LocalizedStringKey(html.strippingHTML))
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -173,10 +173,10 @@ struct UpdateFoundView: View {
     @ViewBuilder
     private func versionBadge(label: String, version: String, highlighted: Bool = false) -> some View {
         VStack(spacing: 2) {
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-            Text(version)
+            Text(LocalizedStringKey(version))
                 .font(.system(.callout, design: .monospaced, weight: .medium))
                 .foregroundStyle(highlighted ? Color(channel.badgeColor) : .primary)
         }

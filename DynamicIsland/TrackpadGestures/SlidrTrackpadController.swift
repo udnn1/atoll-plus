@@ -125,7 +125,10 @@ struct TrackpadGesturesSettingsPane: View {
             gestureTestController: controller.gestureTestController
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background {
+            Form {}
+                .formStyle(.grouped)
+        }
         .navigationTitle("Gładzik")
     }
 }

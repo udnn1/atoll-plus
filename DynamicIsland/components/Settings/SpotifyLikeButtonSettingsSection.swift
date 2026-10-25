@@ -37,7 +37,7 @@ struct SpotifyLikeButtonSettingsSection: View {
                 HStack(spacing: 6) {
                     Text("Redirect URI:")
                         .foregroundStyle(.secondary)
-                    Text(SpotifyLibraryManager.redirectURI)
+                    Text(LocalizedStringKey(SpotifyLibraryManager.redirectURI))
                         .textSelection(.enabled)
                         .monospaced()
                 }
@@ -49,7 +49,7 @@ struct SpotifyLikeButtonSettingsSection: View {
                     .fill(libraryManager.isAuthenticated ? Color.green : Color.secondary)
                     .frame(width: 8, height: 8)
 
-                Text(statusText)
+                Text(LocalizedStringKey(statusText))
                     .foregroundStyle(.secondary)
             }
 

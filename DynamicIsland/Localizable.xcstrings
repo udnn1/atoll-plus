@@ -5633,6 +5633,12 @@
             "state": "translated",
             "value": "測試版"
           }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ALFA"
+          }
         }
       },
       "shouldTranslate": false
@@ -6372,6 +6378,39 @@
         }
       }
     },
+    "Accessibility permission is needed to intercept system controls for the Circular HUD.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okrągły HUD wymaga uprawnienia Dostępność, aby przechwytywać sterowanie systemowe."
+          }
+        }
+      }
+    },
+    "Accessibility permission is needed to intercept system controls for the Custom OSD.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Własny OSD wymaga uprawnienia Dostępność, aby przechwytywać sterowanie systemowe."
+          }
+        }
+      }
+    },
+    "Accessibility permission is needed to intercept system controls for the Vertical HUD.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pionowy pasek wymaga uprawnienia Dostępność, aby przechwytywać sterowanie systemowe."
+          }
+        }
+      }
+    },
     "Accessibility permission lets Dynamic Island replace the native volume, brightness, and keyboard HUDs.": {
       "extractionState": "stale",
       "localizations": {
@@ -6415,6 +6454,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "輔助使用權限可讓動態島取代原生的音量、亮度和鍵盤 HUD。"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uprawnienie Dostępność pozwala Atollowi zastąpić systemowe HUD-y głośności, jasności i klawiatury."
           }
         }
       }
@@ -6462,6 +6507,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "需要輔助使用權限"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wymagane uprawnienie Dostępność"
           }
         }
       }
@@ -7803,6 +7854,17 @@
         }
       }
     },
+    "Add to Safari Reading List": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj do listy Czytelnia Safari"
+          }
+        }
+      }
+    },
     "Additional features": {
       "comment": "merge:ko:alt='추가 기능'",
       "localizations": {
@@ -7918,6 +7980,17 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "其他功能"
+          }
+        }
+      }
+    },
+    "Additional folder access required": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wymagany dodatkowy dostęp do folderów"
           }
         }
       }
@@ -9901,6 +9974,28 @@
         }
       }
     },
+    "An unknown error occurred while updating Atoll.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podczas aktualizacji Atolla wystąpił nieznany błąd."
+          }
+        }
+      }
+    },
+    "An unknown error occurred.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wystąpił nieznany błąd."
+          }
+        }
+      }
+    },
     "Animation": {
       "extractionState": "stale",
       "localizations": {
@@ -9956,6 +10051,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "動畫"
+          }
+        }
+      }
+    },
+    "Animation Details": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szczegóły animacji"
           }
         }
       }
@@ -10085,6 +10191,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Antigravity"
+          }
+        }
+      }
+    },
+    "Antigravity Provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca Antigravity"
           }
         }
       }
@@ -10325,6 +10442,17 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "App 圖示"
+          }
+        }
+      }
+    },
+    "App permissions list": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista uprawnień aplikacji"
           }
         }
       }
@@ -11015,6 +11143,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Atoll %@"
+          }
+        }
+      }
+    },
+    "Atoll Settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ustawienia Atolla"
+          }
+        }
+      }
+    },
+    "Atoll Update": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizacja Atolla"
           }
         }
       }
@@ -12362,6 +12512,17 @@
         }
       }
     },
+    "Background color": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolor tła"
+          }
+        }
+      }
+    },
     "Backlight": {
       "comment": "A control for adjusting the keyboard backlight intensity.",
       "isCommentAutoGenerated": true,
@@ -13584,6 +13745,28 @@
         }
       }
     },
+    "BetterDisplay OSD events will be routed through Atoll's active HUD style. Brightness is always routed; volume is routed when external volume control listener is enabled below. Make sure BetterDisplay's OSD integration is enabled in Settings › Application › Integration.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdarzenia OSD z BetterDisplay będą pokazywane w aktywnym stylu HUD Atolla. Jasność zawsze, głośność tylko przy włączonym poniżej zewnętrznym odbiorze głośności. Upewnij się, że w BetterDisplay jest włączona integracja OSD w Settings › Application › Integration."
+          }
+        }
+      }
+    },
+    "BetterDisplay is installed but not currently running. Launch BetterDisplay to enable integration.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BetterDisplay jest zainstalowany, ale nie działa. Uruchom go, aby włączyć integrację."
+          }
+        }
+      }
+    },
     "Bleeding edge, built daily from dev": {
       "localizations": {
         "ko": {
@@ -13893,6 +14076,17 @@
         }
       }
     },
+    "Bold as bright": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pogrubienie jako jasne kolory"
+          }
+        }
+      }
+    },
     "Bold text as bright colors": {
       "localizations": {
         "ko": {
@@ -14182,6 +14376,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oba aktywne"
+          }
+        }
+      }
+    },
+    "Bottom Padding": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Margines dolny"
           }
         }
       }
@@ -16157,6 +16362,17 @@
         }
       }
     },
+    "Captured sp_dc cookie. Validating…": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pobrano ciasteczko sp_dc. Sprawdzanie…"
+          }
+        }
+      }
+    },
     "Celsius": {
       "localizations": {
         "ko": {
@@ -16946,6 +17162,17 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "檢查更新…"
+          }
+        }
+      }
+    },
+    "Checking": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprawdzanie"
           }
         }
       }
@@ -18322,6 +18549,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Claude"
+          }
+        }
+      }
+    },
+    "Claude Provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca Claude"
           }
         }
       }
@@ -20080,6 +20318,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Codex"
+          }
+        }
+      }
+    },
+    "Codex Provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca Codex"
           }
         }
       }
@@ -21983,6 +22232,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Połączono"
+          }
+        }
+      }
+    },
+    "Connected to Lunar's DDC socket. Brightness and contrast adjustments are shown through Atoll's HUD; volume follows when external volume control listener is enabled below.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Połączono z gniazdem DDC Lunar. Zmiany jasności i kontrastu pokazuje HUD Atolla; głośność też, gdy poniżej włączony jest zewnętrzny odbiór głośności."
           }
         }
       }
@@ -24298,6 +24558,28 @@
         }
       }
     },
+    "Cursor Provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca Cursor"
+          }
+        }
+      }
+    },
+    "Cursor color": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolor kursora"
+          }
+        }
+      }
+    },
     "Cursor style": {
       "localizations": {
         "ko": {
@@ -24463,6 +24745,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Własne dane skupienia"
+          }
+        }
+      }
+    },
+    "Custom Icon": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Własna ikona"
           }
         }
       }
@@ -26912,6 +27205,17 @@
         }
       }
     },
+    "Denied by user": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odrzucone przez użytkownika"
+          }
+        }
+      }
+    },
     "Denied/Revoked": {
       "comment": "A label describing an extension with denied or revoked permissions.",
       "isCommentAutoGenerated": true,
@@ -27563,6 +27867,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diagnostyka"
+          }
+        }
+      }
+    },
+    "Dial in the final polish.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopracuj szczegóły."
           }
         }
       }
@@ -28240,6 +28555,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wyłączone, gdy aktywna jest integracja głośności ekranu zewnętrznego."
+          }
+        }
+      }
+    },
+    "Disabled while the external display app is running — that app owns the keyboard backlight keys.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyłączone, gdy działa aplikacja ekranu zewnętrznego — to ona obsługuje klawisze podświetlenia klawiatury."
           }
         }
       }
@@ -29750,6 +30076,28 @@
         }
       }
     },
+    "Downloading": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pobieranie"
+          }
+        }
+      }
+    },
+    "Downloading Update…": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pobieranie aktualizacji…"
+          }
+        }
+      }
+    },
     "Downloading…": {
       "localizations": {
         "ko": {
@@ -30290,6 +30638,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dynamic Island"
+          }
+        }
+      }
+    },
+    "Dynamic Island HUD": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HUD Dynamic Island"
           }
         }
       }
@@ -31662,6 +32021,17 @@
         }
       }
     },
+    "Enable Custom OSD": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Włącz własny OSD"
+          }
+        }
+      }
+    },
     "Enable Dynamic Island media controls to manage the lock screen panel.": {
       "localizations": {
         "ko": {
@@ -31872,6 +32242,17 @@
         }
       }
     },
+    "Enable Full Disk Access, or grant access to both Documents and Downloads folders to use Shelf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Włącz pełny dostęp do dysku albo nadaj dostęp do folderów Dokumenty i Pobrane, aby korzystać z półki."
+          }
+        }
+      }
+    },
     "Enable HUD replacement": {
       "extractionState": "stale",
       "localizations": {
@@ -32032,6 +32413,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用 LLM 用量監控"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licznik limitu Claude"
           }
         }
       }
@@ -32553,6 +32940,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用專輯封面視差效果"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Włącz paralaksę okładki"
           }
         }
       }
@@ -36366,6 +36759,39 @@
         }
       }
     },
+    "Extract": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyodrębnij"
+          }
+        }
+      }
+    },
+    "Extracting": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyodrębnianie"
+          }
+        }
+      }
+    },
+    "Extracting Update…": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyodrębnianie aktualizacji…"
+          }
+        }
+      }
+    },
     "Extracting…": {
       "localizations": {
         "ko": {
@@ -36556,6 +36982,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obroty wentylatora"
+          }
+        }
+      }
+    },
+    "Fantastical Default View": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domyślny widok Fantastical"
           }
         }
       }
@@ -36945,6 +37382,17 @@
         }
       }
     },
+    "Fingerprint": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odcisk palca"
+          }
+        }
+      }
+    },
     "Fingerprint unlock": {
       "localizations": {
         "ko": {
@@ -37242,6 +37690,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skupienie"
+          }
+        }
+      }
+    },
+    "Focus Enabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skupienie włączone"
           }
         }
       }
@@ -37641,6 +38100,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pierwszy plan"
+          }
+        }
+      }
+    },
+    "Foreground color": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolor tekstu"
           }
         }
       }
@@ -38048,6 +38518,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wymagany pełny dostęp do dysku"
+          }
+        }
+      }
+    },
+    "Full Disk Access for global mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pełny dostęp do dysku dla trybu globalnego"
           }
         }
       }
@@ -39573,6 +40054,17 @@
       },
       "shouldTranslate": false
     },
+    "Give it a friendly name and control playback speed.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nadaj jej przyjazną nazwę i ustaw prędkość odtwarzania."
+          }
+        }
+      }
+    },
     "Gives each app its own volume and mute, independent of the system volume. macOS will ask for audio recording permission the first time an app's level is changed: routing an app's audio through Atoll is the only way it can be adjusted, and nothing is ever recorded or written to disk. Apps left at 100% and unmuted keep their normal, untouched path to the speakers.": {
       "localizations": {
         "pl": {
@@ -39768,6 +40260,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dobra"
+          }
+        }
+      }
+    },
+    "Google blocks in-app sign-in. Use email & password, Apple, or tap “Open in Browser” to sign in there and paste sp_dc in Settings.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google blokuje logowanie w aplikacji. Użyj e-maila i hasła, Apple albo „Otwórz w przeglądarce”, zaloguj się tam i wklej sp_dc w Ustawieniach."
           }
         }
       }
@@ -40015,6 +40518,17 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "漸變"
+          }
+        }
+      }
+    },
+    "Granted": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nadano"
           }
         }
       }
@@ -41420,6 +41934,17 @@
         }
       }
     },
+    "Hide until hovered": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chowaj do najechania"
+          }
+        }
+      }
+    },
     "Hide until hovered on non-notch displays": {
       "localizations": {
         "ko": {
@@ -41938,6 +42463,28 @@
         }
       }
     },
+    "Horizontal Offset": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesunięcie poziome"
+          }
+        }
+      }
+    },
+    "Horizontal media gestures": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poziome gesty multimediów"
+          }
+        }
+      }
+    },
     "Horizontal:": {
       "extractionState": "stale",
       "localizations": {
@@ -42202,6 +42749,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kolor ikony i postępu"
+          }
+        }
+      }
+    },
+    "Icon import was canceled or failed.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import ikony anulowano albo się nie udał."
           }
         }
       }
@@ -43120,6 +43678,17 @@
         }
       }
     },
+    "Install": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zainstaluj"
+          }
+        }
+      }
+    },
     "Install & Relaunch": {
       "comment": "A button that installs an update and relaunches the app.",
       "isCommentAutoGenerated": true,
@@ -43200,6 +43769,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zainstaluj aktualizację"
+          }
+        }
+      }
+    },
+    "Install [BetterDisplay](https://betterdisplay.pro) to control external display brightness (and optional volume) through Atoll's HUD.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zainstaluj [BetterDisplay](https://betterdisplay.pro), aby sterować jasnością (i opcjonalnie głośnością) ekranu zewnętrznego przez HUD Atolla."
+          }
+        }
+      }
+    },
+    "Install [Lunar](https://lunar.fyi) to control external display brightness, contrast, and optional volume through Atoll's HUD via DDC.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zainstaluj [Lunar](https://lunar.fyi), aby sterować jasnością, kontrastem i opcjonalnie głośnością ekranu zewnętrznego przez HUD Atolla (DDC)."
           }
         }
       }
@@ -43790,6 +44381,17 @@
         }
       }
     },
+    "Keep terminal open": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zostaw terminal otwarty"
+          }
+        }
+      }
+    },
     "Keep terminal open until clicked outside": {
       "localizations": {
         "ko": {
@@ -44222,6 +44824,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "W trybie krótkiego powiadomienia podpisy są skrócone do wł./wył."
+          }
+        }
+      }
+    },
+    "Last Activity": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostatnia aktywność"
           }
         }
       }
@@ -46156,6 +46769,17 @@
         }
       }
     },
+    "LocalSend Device Picker Style": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl wyboru urządzenia LocalSend"
+          }
+        }
+      }
+    },
     "Lock Screen": {
       "localizations": {
         "fr": {
@@ -46755,6 +47379,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sekcja ustawień ekranu blokady"
+          }
+        }
+      }
+    },
+    "Logged in. Finishing capture…": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zalogowano. Kończenie pobierania…"
           }
         }
       }
@@ -47698,6 +48333,39 @@
         }
       }
     },
+    "Lunar is installed but not currently running. Launch Lunar to enable integration.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lunar jest zainstalowany, ale nie działa. Uruchom go, aby włączyć integrację."
+          }
+        }
+      }
+    },
+    "Lunar is running but the socket connection is not yet established. It will connect automatically.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lunar działa, ale połączenie z gniazdem nie jest jeszcze nawiązane. Połączy się automatycznie."
+          }
+        }
+      }
+    },
+    "Lyric highlight": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podświetlenie tekstu"
+          }
+        }
+      }
+    },
     "Lyrics": {
       "localizations": {
         "ko": {
@@ -48061,6 +48729,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upewnij się, że LocalSend działa na innych urządzeniach"
+          }
+        }
+      }
+    },
+    "Manage app permissions": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zarządzaj uprawnieniami aplikacji"
           }
         }
       }
@@ -48571,6 +49250,17 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "匹配Notch真實大小"
+          }
+        }
+      }
+    },
+    "Match the notch footprint or intentionally exceed it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopasuj do obrysu notcha albo celowo go przekrocz."
           }
         }
       }
@@ -50539,6 +51229,12 @@
             "state": "translated",
             "value": "訊息"
           }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiadomości"
+          }
         }
       }
     },
@@ -52257,6 +52953,17 @@
         }
       }
     },
+    "Mouse reporting": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raportowanie myszy"
+          }
+        }
+      }
+    },
     "Move Down": {
       "comment": "A button label that says \"Move Down\".",
       "isCommentAutoGenerated": true,
@@ -52648,6 +53355,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音樂面板變體"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wariant panelu muzyki"
           }
         }
       }
@@ -53469,6 +54182,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Konta New API"
+          }
+        }
+      }
+    },
+    "New API Provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca New API"
           }
         }
       }
@@ -56049,6 +56773,28 @@
         }
       }
     },
+    "Not detected": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie wykryto"
+          }
+        }
+      }
+    },
+    "Not running": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie działa"
+          }
+        }
+      }
+    },
     "Notch Experiences": {
       "comment": "A toggle that enables or disables the \"Notch Experiences\" feature for a specific app.",
       "isCommentAutoGenerated": true,
@@ -56863,6 +57609,17 @@
         }
       }
     },
+    "Nudge the animation inside the notch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesuń animację wewnątrz notcha."
+          }
+        }
+      }
+    },
     "Number of lines kept in the scrollback buffer. Higher values use more memory.": {
       "localizations": {
         "ko": {
@@ -57094,6 +57851,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wył."
+          }
+        }
+      }
+    },
+    "Offset": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesunięcie"
           }
         }
       }
@@ -57555,6 +58323,17 @@
         }
       }
     },
+    "Opacity": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krycie"
+          }
+        }
+      }
+    },
     "Open Developer Dashboard": {
       "localizations": {
         "ko": {
@@ -57851,6 +58630,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otwórz odtwarzacz Spotify w przeglądarce"
+          }
+        }
+      }
+    },
+    "Open Spotify shouldn't load here — capture should fire before this. Falling back.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotify nie powinno się tu otwierać — pobieranie powinno zadziałać wcześniej. Przechodzę do metody zapasowej."
           }
         }
       }
@@ -58451,6 +59241,17 @@
         }
       }
     },
+    "Option as Meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Option jako Meta"
+          }
+        }
+      }
+    },
     "Option as Meta key": {
       "localizations": {
         "ko": {
@@ -58619,6 +59420,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inne…"
+          }
+        }
+      }
+    },
+    "Output": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyjście"
           }
         }
       }
@@ -60658,6 +61470,17 @@
         }
       }
     },
+    "Playback Speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prędkość odtwarzania"
+          }
+        }
+      }
+    },
     "Playback needs none of this. The Favorite Song control does, because favouriting is not something macOS Now Playing can carry -- Atoll has to ask Cider itself.": {
       "localizations": {
         "pl": {
@@ -60814,6 +61637,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ustaw klucz API wybranego dostawcy AI w ustawieniach modelu."
+          }
+        }
+      }
+    },
+    "Please provide both a valid URL and name": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podaj poprawny adres URL i nazwę"
           }
         }
       }
@@ -61242,6 +62076,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Położenie"
+          }
+        }
+      }
+    },
+    "Position & Padding": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Położenie i marginesy"
           }
         }
       }
@@ -62456,6 +63301,17 @@
         }
       }
     },
+    "Quick Presets": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szybkie presety"
+          }
+        }
+      }
+    },
     "Quick Share": {
       "comment": "A section header that says \"Quick Share\".",
       "isCommentAutoGenerated": true,
@@ -63579,6 +64435,17 @@
         }
       }
     },
+    "Recording Controls": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sterowanie nagrywaniem"
+          }
+        }
+      }
+    },
     "Recording Detected": {
       "comment": "A text description of a red dot displayed in the Atoll header when screen recording is active.",
       "isCommentAutoGenerated": true,
@@ -63641,6 +64508,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wykryto nagrywanie"
+          }
+        }
+      }
+    },
+    "Recording Hover Style": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl nagrywania po najechaniu"
           }
         }
       }
@@ -64338,6 +65216,28 @@
         }
       }
     },
+    "Reminder alignment": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyrównanie przypomnienia"
+          }
+        }
+      }
+    },
+    "Reminder vertical offset": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesunięcie pionowe przypomnienia"
+          }
+        }
+      }
+    },
     "Reminders": {
       "localizations": {
         "fr": {
@@ -65004,6 +65904,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Poproś o dostęp"
+          }
+        }
+      }
+    },
+    "Request Folder Access": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poproś o dostęp do folderów"
           }
         }
       }
@@ -66848,6 +67759,17 @@
         }
       }
     },
+    "Reverse scroll gestures": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odwróć gesty przewijania"
+          }
+        }
+      }
+    },
     "Reverse swipe gestures": {
       "localizations": {
         "ko": {
@@ -66956,6 +67878,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cofnij dostęp"
+          }
+        }
+      }
+    },
+    "Revoked by user": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cofnięte przez użytkownika"
           }
         }
       }
@@ -67221,6 +68154,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "圓環"
+          }
+        }
+      }
+    },
+    "Rotation": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrót"
           }
         }
       }
@@ -67793,6 +68737,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zachowuj historię po ponownym uruchomieniu"
+          }
+        }
+      }
+    },
+    "Scale": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skala"
           }
         }
       }
@@ -69388,6 +70343,17 @@
         }
       }
     },
+    "Select Timer Sound": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz dźwięk timera"
+          }
+        }
+      }
+    },
     "Select a color to view details": {
       "localizations": {
         "ko": {
@@ -70168,6 +71134,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sumy sesji"
+          }
+        }
+      }
+    },
+    "Session cleared. Sign in again to capture the cookie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesja wyczyszczona. Zaloguj się ponownie, aby pobrać ciasteczko."
           }
         }
       }
@@ -71319,6 +72296,17 @@
         }
       }
     },
+    "Show Change Media Output control": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokazuj przycisk zmiany wyjścia multimediów"
+          }
+        }
+      }
+    },
     "Show Character Count": {
       "localizations": {
         "ko": {
@@ -72039,6 +73027,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "顯示電池指示器"
+          }
+        }
+      }
+    },
+    "Show battery indicator in Minimalistic UI": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokazuj baterię w interfejsie minimalistycznym"
           }
         }
       }
@@ -74518,6 +75517,17 @@
         }
       }
     },
+    "Show song title and artist in closed notch": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokazuj tytuł i wykonawcę w zamkniętym notchu"
+          }
+        }
+      }
+    },
     "Show song title and artist on non-notch displays": {
       "localizations": {
         "ko": {
@@ -75539,6 +76549,17 @@
         }
       }
     },
+    "Sign in to your Spotify account.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaloguj się na konto Spotify."
+          }
+        }
+      }
+    },
     "Sign in with Spotify": {
       "comment": "A button that opens a sheet for signing in with Spotify.",
       "isCommentAutoGenerated": true,
@@ -75589,6 +76610,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaloguj przez Spotify"
+          }
+        }
+      }
+    },
+    "Sign in with email & password, Apple, or Facebook. Google blocks in-app sign-in — use “Open in Browser” for Google accounts.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaloguj się e-mailem i hasłem, przez Apple albo Facebook. Google blokuje logowanie w aplikacji — dla kont Google użyj „Otwórz w przeglądarce”."
           }
         }
       }
@@ -75673,6 +76705,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Szybkość wykrywania Siri"
+          }
+        }
+      }
+    },
+    "Size & Crop": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozmiar i kadrowanie"
           }
         }
       }
@@ -78048,6 +79091,17 @@
         }
       }
     },
+    "Start from a popular layout and tweak from there.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zacznij od popularnego układu i dopasuj go."
+          }
+        }
+      }
+    },
     "Start picking colors to build your history": {
       "localizations": {
         "ko": {
@@ -80247,6 +81301,17 @@
         }
       }
     },
+    "System Share Menu": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemowe menu udostępniania"
+          }
+        }
+      }
+    },
     "System features": {
       "localizations": {
         "ar": {
@@ -81142,6 +82207,17 @@
         }
       }
     },
+    "That file could not be loaded as an image.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tego pliku nie da się wczytać jako obrazu."
+          }
+        }
+      }
+    },
     "The app is currently using %@ MB, which exceeds the safe limit of %@ MB. Restart now to free memory?": {
       "localizations": {
         "en": {
@@ -81267,6 +82343,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lokalny serwer API aplikacji th-ch, z którym Atoll jest już uwierzytelniony."
+          }
+        }
+      }
+    },
+    "The update could not be downloaded. Please check your internet connection and try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się pobrać aktualizacji. Sprawdź połączenie z internetem i spróbuj ponownie."
           }
         }
       }
@@ -81591,6 +82678,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Integracja z kalendarzem innej firmy"
+          }
+        }
+      }
+    },
+    "Third-party DDC app integration": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Integracja z aplikacją DDC innej firmy"
+          }
+        }
+      }
+    },
+    "Third-party DDC provider": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostawca DDC innej firmy"
           }
         }
       }
@@ -83697,6 +84806,17 @@
         }
       }
     },
+    "Transform & Display": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przekształcenie i wyświetlanie"
+          }
+        }
+      }
+    },
     "Transform your notch truly yours": {
       "extractionState": "stale",
       "localizations": {
@@ -84457,6 +85577,17 @@
         }
       }
     },
+    "Unable to save the icon file.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się zapisać pliku ikony."
+          }
+        }
+      }
+    },
     "Unable to stop recording. Use Command-Control-Escape or the macOS recording menu.": {
       "localizations": {
         "ko": {
@@ -84691,6 +85822,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nieznane"
+          }
+        }
+      }
+    },
+    "Unknown Error": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nieznany błąd"
+          }
+        }
+      }
+    },
+    "Unknown error occurred": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wystąpił nieznany błąd"
           }
         }
       }
@@ -85026,6 +86179,17 @@
         }
       }
     },
+    "Update Error": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Błąd aktualizacji"
+          }
+        }
+      }
+    },
     "Update Failed": {
       "comment": "A title for an error that occurs during an update.",
       "isCommentAutoGenerated": true,
@@ -85064,6 +86228,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktualizacja nie powiodła się"
+          }
+        }
+      }
+    },
+    "Update Found": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znaleziono aktualizację"
+          }
+        }
+      }
+    },
+    "Update Installed!": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizacja zainstalowana!"
           }
         }
       }
@@ -85644,6 +86830,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Podział użycia"
+          }
+        }
+      }
+    },
+    "Use 3D Bluetooth HUD icon": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikona 3D w HUD Bluetooth"
           }
         }
       }
@@ -87499,6 +88696,17 @@
         }
       }
     },
+    "Vertical Offset": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przesunięcie pionowe"
+          }
+        }
+      }
+    },
     "Vertical offset": {
       "localizations": {
         "ko": {
@@ -87855,6 +89063,28 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "在 GitHub 上檢視：th-ch/youtube-music"
+          }
+        }
+      }
+    },
+    "Visible Height": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widoczna wysokość"
+          }
+        }
+      }
+    },
+    "Visible Width": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widoczna szerokość"
           }
         }
       }
@@ -89975,6 +91205,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "정지 버튼 포함"
+          }
+        }
+      }
+    },
+    "Without Full Disk Access, Shelf can only read files from Documents and Downloads. Grant Full Disk Access to make Shelf work globally.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez pełnego dostępu do dysku półka czyta pliki tylko z Dokumentów i Pobranych. Nadaj pełny dostęp do dysku, aby działała wszędzie."
           }
         }
       }

@@ -34,7 +34,7 @@ Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Track
 - Odsuwanie wyspy od menu aplikacji przesuwa cały kształt wyspy (wcześniej przesuwała się tylko zawartość i animacje były ucinane). Na ekranie z notchem wyspa zostaje na środku, a gdy menu dochodzą do notcha, jej lewe skrzydło się chowa, żeby nie zasłaniać menu.
 
 ### Polski interfejs
-- `DynamicIsland/Localizable.xcstrings` (katalog, który faktycznie trafia do aplikacji) zsynchronizowany z kodem przez `xcstringstool sync`: 1706 tekstów, z czego wszystkie tłumaczalne mają wersję polską. Wcześniej katalog znał 1601 tekstów, a polski miało tylko 174.
+- `DynamicIsland/Localizable.xcstrings` (katalog, który faktycznie trafia do aplikacji) zsynchronizowany z kodem przez `xcstringstool sync`, wszystkie tłumaczalne teksty mają wersję polską (wcześniej polski miało tylko 174 z 1601). Dodatkowo 116 tekstów, które Ustawienia przekazywały jako zwykłe napisy (komunikaty o uprawnieniach, statusy BetterDisplay/Lunar, wyniki wyszukiwania, aktualizacje), dopisano ręcznie, a widoki w `components/Settings` wyświetlają je przez `LocalizedStringKey`, więc też są tłumaczone.
 - Panel **Gładzik** ma własny słownik `DynamicIsland/TrackpadGestures/SlidrStrings.swift` (191 tekstów), przetłumaczony na polski.
 - Teksty pokazują się po polsku, gdy macOS ma polski jako język główny. Przy dodawaniu nowych tekstów: zbuduj z `SWIFT_EMIT_LOC_STRINGS=YES`, uruchom `xcrun xcstringstool sync DynamicIsland/Localizable.xcstrings --stringsdata …` i dopisz tłumaczenia `pl`.
 

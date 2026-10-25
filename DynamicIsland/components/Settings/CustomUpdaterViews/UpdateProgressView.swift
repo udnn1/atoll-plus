@@ -90,7 +90,7 @@ struct UpdateProgressView: View {
             }
 
             // Phase label
-            Text(phaseLabel)
+            Text(LocalizedStringKey(phaseLabel))
                 .font(.headline)
                 .foregroundStyle(.primary)
                 .animation(.easeInOut, value: state.phase)
@@ -99,7 +99,7 @@ struct UpdateProgressView: View {
             if state.phase == .downloading {
                 HStack(spacing: 16) {
                     Label {
-                        Text(state.downloadSpeedString)
+                        Text(LocalizedStringKey(state.downloadSpeedString))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } icon: {
@@ -202,7 +202,7 @@ struct UpdateProgressView: View {
                 .foregroundStyle(isComplete || isActive ? channelColor : Color.secondary.opacity(0.5))
                 .symbolEffect(.pulse, isActive: isActive)
 
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(.caption2)
                 .foregroundStyle(isActive || isComplete ? Color.primary : Color.secondary.opacity(0.5))
         }
