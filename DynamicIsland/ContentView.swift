@@ -59,6 +59,7 @@ struct ContentView: View {
     /// compared against the frontmost app's menus. Only the *size* is read --
     /// the offset that follows does not change it, so there is no feedback.
     @State private var closedContentWidth: CGFloat = 0
+    @State private var lastKnownMenusRightEdge: CGFloat?
     @ObservedObject var capsLockManager = CapsLockManager.shared
     @ObservedObject var extensionLiveActivityManager = ExtensionLiveActivityManager.shared
     @ObservedObject var extensionNotchExperienceManager = ExtensionNotchExperienceManager.shared
@@ -458,7 +459,7 @@ struct ContentView: View {
         guard vm.notchState == .closed,
               !isNonNotchScreen,
               !(isClaudeLimitPinned && claudeLimitService.activityOffset != nil),
-              let menusRightEdge = menuBarLayout.appMenusRightEdge,
+              let menusRightEdge = menuBarLayout.appMenusRightEdge ?? lastKnownMenusRightEdge,
               let screen = NSScreen.screens.first(where: { $0.localizedName == currentScreenName }),
               let left = screen.auxiliaryTopLeftArea?.width,
               let right = screen.auxiliaryTopRightArea?.width else { return 0 }
@@ -1044,6 +1045,12 @@ struct ContentView: View {
             }
             .onAppear {
                 if vm.notchState == .closed { menuBarLayout.startTracking() }
+            }
+            .onChange(of: menuBarLayout.appMenusRightEdge) { _, edge in
+                if let edge { lastKnownMenusRightEdge = edge }
+            }
+            .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didActivateApplicationNotification)) { _ in
+                lastKnownMenusRightEdge = nil
             }
             .onChange(of: vm.notchState) { _, state in
                 // An open notch covers the menu bar wholesale and is the user's
