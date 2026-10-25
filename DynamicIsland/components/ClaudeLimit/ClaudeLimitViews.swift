@@ -454,6 +454,7 @@ extension View {
 
 private struct ClaudeRingOverlayLayer: View {
     let anchor: Anchor<CGRect>?
+    @EnvironmentObject var vm: DynamicIslandViewModel
     @ObservedObject private var service = ClaudeLimitService.shared
     @Default(.claudeLimitMetric) private var metric
     @Default(.claudeLimitShowRing) private var showRing
@@ -461,15 +462,28 @@ private struct ClaudeRingOverlayLayer: View {
 
     var body: some View {
         GeometryReader { geo in
-            let frame = anchor.map { geo[$0] } ?? lastFrame
-            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: max(frame.height, 1))
-                .frame(width: frame.width, height: frame.height)
-                .position(x: frame.midX, y: frame.midY)
+            let target = anchor.map { resolvedFrame(geo[$0], containerWidth: geo.size.width) } ?? lastFrame
+            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: max(target.height, 1))
+                .frame(width: target.width, height: target.height)
+                .position(x: target.midX, y: target.midY)
                 .opacity(anchor == nil ? 0 : 1)
                 .animation(.easeInOut(duration: 0.2), value: anchor == nil)
-                .onChange(of: frame) { _, value in if anchor != nil { lastFrame = value } }
-                .onAppear { if anchor != nil { lastFrame = frame } }
+                .onChange(of: target) { _, value in if anchor != nil { lastFrame = value } }
+                .onAppear { if anchor != nil { lastFrame = target } }
         }
         .allowsHitTesting(false)
+    }
+
+    private func resolvedFrame(_ frame: CGRect, containerWidth: CGFloat) -> CGRect {
+        let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
+        guard let screen = NSScreen.screens.first(where: { $0.localizedName == name }),
+              screen.safeAreaInsets.top > 0,
+              let left = screen.auxiliaryTopLeftArea?.width,
+              let right = screen.auxiliaryTopRightArea?.width else { return frame }
+        let half = (screen.frame.width - left - right) / 2
+        let mid = containerWidth / 2
+        let onLeft = frame.midX < mid
+        let x = onLeft ? mid - half - 2 - frame.width : mid + half + 2
+        return CGRect(x: x, y: frame.minY, width: frame.width, height: frame.height)
     }
 }
