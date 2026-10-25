@@ -41,6 +41,7 @@ final class MenuBarLayout: ObservableObject {
     private var pollTimer: Timer?
     private var trackers = 0
     private var inFlight = false
+    private var measuredPID: pid_t?
 
     private init() {}
 
@@ -103,7 +104,6 @@ final class MenuBarLayout: ObservableObject {
         }
         pollTimer?.invalidate()
         pollTimer = nil
-        appMenusRightEdge = nil
     }
 
     func refresh() {
@@ -125,7 +125,14 @@ final class MenuBarLayout: ObservableObject {
             await MainActor.run {
                 self.inFlight = false
                 guard self.trackers > 0 else { return }
-                if self.appMenusRightEdge != edge { self.appMenusRightEdge = edge }
+                let resolved: CGFloat?
+                if self.measuredPID == pid, let previous = self.appMenusRightEdge {
+                    resolved = max(previous, edge ?? previous)
+                } else {
+                    resolved = edge
+                }
+                self.measuredPID = pid
+                if self.appMenusRightEdge != resolved { self.appMenusRightEdge = resolved }
             }
         }
     }
