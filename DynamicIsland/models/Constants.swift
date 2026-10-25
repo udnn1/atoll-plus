@@ -1283,6 +1283,7 @@ extension Defaults.Keys {
     static let enableLLMUsageFeature = Key<Bool>("enableLLMUsageFeature", default: false)
     static let claudeLimitMetric = Key<String>("claudeLimitMetric", default: "five")
     static let claudeLimitShowRing = Key<Bool>("claudeLimitShowRing", default: true)
+    static let enableKeyboardRemap = Key<Bool>("enableKeyboardRemap", default: true)
     static let enableClaudeProvider = Key<Bool>("enableClaudeProvider", default: true)
     static let enableCodexProvider = Key<Bool>("enableCodexProvider", default: true)
     static let enableCursorProvider = Key<Bool>("enableCursorProvider", default: true)

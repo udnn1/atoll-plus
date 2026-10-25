@@ -1201,6 +1201,14 @@ struct GeneralSettings: View {
                     Text("Menubar icon")
                 }
                 .settingsHighlight(id: highlightID("Menubar icon"))
+                Defaults.Toggle(key: .enableKeyboardRemap) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Mapowanie klawiszy")
+                        Text("Lewy Cmd ↔ lewy Ctrl, prawy Cmd ↔ prawy Option, Caps Lock bez opóźnienia. Przywracane po podłączeniu klawiatury i wybudzeniu Maca.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 LaunchAtLogin.Toggle {
                     Text("Launch at login")
                 }

@@ -26,6 +26,12 @@ Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Track
 - **Parametry:** szerokość strefy krawędzi, odległość ruchu na jeden krok osobno dla każdej krawędzi, strefa i czas podwójnego stuknięcia w rogu, bezpieczny 15-sekundowy test gestów bez wykonywania akcji.
 - **Moja konfiguracja** przeniosła się automatycznie z `com.slidr.free` przy pierwszym uruchomieniu: lewa krawędź = jasność, prawa = głośność, górna wyłączona, środkowe kliknięcie wyłączone.
 
+### Mapowanie klawiszy (zamiast Karabiner-Elements i keymapd)
+- `managers/KeyboardRemapper.swift` przy starcie Atolla ustawia przez `/usr/bin/hidutil`: lewy Cmd ↔ lewy Ctrl, prawy Cmd ↔ prawy Option oraz `CapsLockDelayOverride = 0` (Caps Lock bez opóźnienia).
+- Mapowanie jest ponawiane po podłączeniu każdej klawiatury (powiadomienie IOKit o nowym `IOHIDEventService`, np. ponowne połączenie MX Keys przez Bluetooth), po wybudzeniu i po powrocie do sesji.
+- Włącznik: **Ustawienia → Ogólne → Mapowanie klawiszy**. Wyłączenie czyści zamianę klawiszy.
+- Działa bez przechwytywania klawiatury, więc nie hamuje systemu jak Karabiner.
+
 ### Poprawki błędów
 - Na monitorze bez notcha schowana wyspa wysuwa się przy animacji ładowania, włączaniu muzyki i innych animacjach (wcześniej animacja grała poza ekranem).
 - Rozmycie zawartości notcha znika po przewijaniu kółkiem myszy. Wcześniej myszy bez fazy końca gestu (np. Logitech) zostawiały rozmycie na stałe.
