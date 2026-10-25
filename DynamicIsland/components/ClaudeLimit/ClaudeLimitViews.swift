@@ -32,11 +32,27 @@ struct ClaudeLimitLiveActivity: View {
     @ObservedObject private var service = ClaudeLimitService.shared
     @Default(.claudeLimitMetric) private var metric
     @Default(.claudeLimitShowRing) private var showRing
+    var showsCapsLock = false
+    var capsLockColor: Color = .white
 
     var body: some View {
-        NotchSingleWingActivity(reportsRingRange: true) { size, _ in
-            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+        NotchSingleWingActivity(reportsRingRange: true, itemCount: showsCapsLock ? 2 : 1) { size, isLeft in
+            HStack(spacing: 4) {
+                if showsCapsLock && isLeft { capsIcon(size: size) }
+                ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+                if showsCapsLock && !isLeft { capsIcon(size: size) }
+            }
         }
+        .animation(.spring(response: 0.38, dampingFraction: 0.82), value: showsCapsLock)
+    }
+
+    private func capsIcon(size: CGFloat) -> some View {
+        Image(systemName: "capslock.fill")
+            .font(.system(size: size * 0.7, weight: .semibold))
+            .symbolRenderingMode(.hierarchical)
+            .foregroundStyle(capsLockColor)
+            .frame(width: size, height: size)
+            .transition(.scale(scale: 0.4).combined(with: .opacity))
     }
 }
 
@@ -129,7 +145,6 @@ struct NotchSingleWingActivity<Content: View>: View {
 
     private func ringView(size: CGFloat, isLeft: Bool) -> some View {
         content(size, isLeft)
-            .transition(.opacity)
     }
 
     private func ringRange(placement: Placement, physicalWidth: CGFloat, extent: CGFloat) -> ClosedRange<CGFloat>? {

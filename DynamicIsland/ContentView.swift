@@ -744,7 +744,7 @@ struct ContentView: View {
             .padding(.bottom, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.top, pillTopOffset)
             .offset(x: claudeLimitOffset + (isConnectivityHUDVisible ? 0 : menuBarClearanceOffset))
-            .animation(.smooth(duration: 0.25), value: claudeLimitOffset + menuBarClearanceOffset)
+            .animation(.spring(response: 0.38, dampingFraction: 0.82), value: claudeLimitOffset + menuBarClearanceOffset)
             .accessibilityIdentifier("AtollNotch")
     }
 
@@ -1201,6 +1201,19 @@ struct ContentView: View {
                       let isAirPodsListeningModeSneak = coordinator.sneakPeek.type == .bluetoothAudio
                           && coordinator.sneakPeek.value < 0
                           && AirPodsListeningMode.fromHUDSymbol(coordinator.sneakPeek.icon) != nil
+                      let hasOtherPersistentActivity: Bool = {
+                          if canShowMusicDuringExpansion && musicPairingEligible { return true }
+                          guard vm.notchState == .closed, !vm.hideOnClosed else { return extensionStandalonePayload != nil }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .timer) && timerManager.isTimerActive && coordinator.timerLiveActivityEnabled { return true }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .reminder) && reminderManager.isActive && enableReminderLiveActivity { return true }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .recording) && recordingManager.isRecording && Defaults[.enableScreenRecordingDetection] && Defaults[.showRecordingIndicator] && !musicPairingEligible { return true }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .download) && downloadManager.isDownloading && Defaults[.enableDownloadListener] { return true }
+                          if !isCurrentScreenExpansionVisible && localSendLiveActivityActive { return true }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .doNotDisturb) && Defaults[.enableDoNotDisturbDetection] && Defaults[.showDoNotDisturbIndicator] && (doNotDisturbManager.isDoNotDisturbActive || doNotDisturbManager.isFocusToastDismissing) && !lockScreenManager.isLocked { return true }
+                          if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .privacy) && privacyManager.hasAnyIndicator && (Defaults[.enableCameraDetection] || Defaults[.enableMicrophoneDetection]) { return true }
+                          return extensionStandalonePayload != nil
+                      }()
+                      let claudeAbsorbsCaps = isClaudeLimitPinned && !showCapsLockLabel && !coordinator.expandingView.show && !hasOtherPersistentActivity
 
                       if currentScreenExpansionType == .battery
                             && isBatteryHUDVisibleOnCurrentScreen
@@ -1218,7 +1231,7 @@ struct ContentView: View {
                             styleOverride: batteryModel.activeTemporaryHUDKind.map { resolvedBatteryNotificationStyle(for: $0) }
                         )
                         .id(batteryModel.activeTemporaryHUDToken)
-                      } else if isSneakPeekVisibleOnCurrentScreen && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .timer) && (coordinator.sneakPeek.type != .reminder) && !coordinator.sneakPeek.type.isExtensionPayload && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
+                      } else if isSneakPeekVisibleOnCurrentScreen && !(coordinator.sneakPeek.type == .capsLock && claudeAbsorbsCaps) && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .timer) && (coordinator.sneakPeek.type != .reminder) && !coordinator.sneakPeek.type.isExtensionPayload && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
                           if coordinator.sneakPeek.type == .capsLock && !showCapsLockLabel {
                               capsLockWingActivity
                           } else {
@@ -1229,7 +1242,7 @@ struct ContentView: View {
                                           : AnyTransition.opacity
                                   )
                           }
-                      } else if vm.notchState == .closed && capsLockManager.isCapsLockActive && Defaults[.enableCapsLockIndicator] && !vm.hideOnClosed && !lockScreenManager.isLocked {
+                      } else if !claudeAbsorbsCaps && vm.notchState == .closed && capsLockManager.isCapsLockActive && Defaults[.enableCapsLockIndicator] && !vm.hideOnClosed && !lockScreenManager.isLocked {
                           if showCapsLockLabel {
                               InlineHUD(type: .constant(.capsLock), value: .constant(1.0), icon: .constant(""), hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
                                   .transition(AnyTransition.move(edge: .trailing).combined(with: .opacity))
@@ -1272,7 +1285,7 @@ struct ContentView: View {
                               )
                           }
                       } else if isClaudeLimitPinned && !coordinator.expandingView.show {
-                          ClaudeLimitLiveActivity()
+                          ClaudeLimitLiveActivity(showsCapsLock: claudeAbsorbsCaps && capsLockManager.isCapsLockActive && Defaults[.enableCapsLockIndicator], capsLockColor: capsLockTintMode.color)
                               .transition(.identity)
                       } else if !coordinator.expandingView.show && vm.notchState == .closed && !shelfState.isEmpty && !vm.hideOnClosed && !lockScreenManager.isLocked && !enableMinimalisticUI {
                           ShelfInlineLiveActivity()
