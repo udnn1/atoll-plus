@@ -712,7 +712,6 @@ struct ContentView: View {
 
     private var mainLayoutBase: some View {
         NotchLayout()
-            .claudeRingOverlay(enabled: isClaudeLimitPinned)
             .frame(alignment: .top)
             // Connectivity HUD metrics already describe the complete surface.
             // Applying the regular closed-notch inset here makes that surface
@@ -921,6 +920,7 @@ struct ContentView: View {
         ZStack(alignment: .top) {
             configuredMainLayout
         }
+        .claudeRingOverlay(enabled: isClaudeLimitPinned && vm.notchState == .closed)
         .frame(
             maxWidth: (dynamicNotchSize.width + (vm.notchState == .open ? 24 : 0) + (isDynamicIslandMode ? dynamicIslandShadowInset * 2 : 0)).rounded(),
             maxHeight: (dynamicNotchSize.height + (vm.notchState == .open ? 12 : 0) + (isIslandMode ? 0 : notchTopScreenBleedAmount) + (isDynamicIslandMode ? dynamicIslandTopOffset + dynamicIslandShadowInset * 2 : currentShadowPadding)).rounded(),

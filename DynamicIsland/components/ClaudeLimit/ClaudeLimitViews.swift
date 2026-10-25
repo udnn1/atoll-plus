@@ -466,7 +466,6 @@ private struct ClaudeRingOverlayLayer: View {
                 .frame(width: frame.width, height: frame.height)
                 .position(x: frame.midX, y: frame.midY)
                 .opacity(anchor == nil ? 0 : 1)
-                .animation(.spring(response: 0.38, dampingFraction: 0.82), value: frame)
                 .animation(.easeInOut(duration: 0.2), value: anchor == nil)
                 .onChange(of: frame) { _, value in if anchor != nil { lastFrame = value } }
                 .onAppear { if anchor != nil { lastFrame = frame } }
