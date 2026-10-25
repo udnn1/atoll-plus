@@ -2,7 +2,7 @@
 
 # Atoll Plus
 
-**Dynamic Island dla macOS — z licznikiem limitu Claude, gestami gładzika, mapowaniem klawiszy i polskim interfejsem.**
+**Dynamic Island dla macOS — z licznikiem limitu Claude, gestami gładzika, klawiaturą w stylu Windows i polskim interfejsem.**
 
 [![macOS](https://img.shields.io/badge/macOS-14%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](#budowanie-i-instalacja)
 [![Swift](https://img.shields.io/badge/Swift-SwiftUI-F05138?style=for-the-badge&logo=swift&logoColor=white)](https://developer.apple.com/swiftui/)
@@ -28,7 +28,7 @@ Jedna aplikacja zamiast kilku — wszystko startuje razem z Atollem, bez osobnyc
 |:-:|---|---|---|
 | 🟠 | Pierścień z limitem Claude w wyspie + karta **Limity** | Ustawienia → Statystyki · menu na pasku → **Limit Claude** | claude-tray |
 | 🖐️ | Gesty na krawędziach i rogach gładzika, środkowe kliknięcie, haptyka | Ustawienia → **Gładzik** | Slidr-Free |
-| ⌨️ | Zamiana klawiszy, Caps Lock bez opóźnienia | Ustawienia → **Klawiatura** | Karabiner-Elements |
+| ⌨️ | Klawiatura w stylu Windows (Ctrl tam, gdzie w Windowsie), Caps Lock bez opóźnienia | Ustawienia → **Klawiatura** | Karabiner-Elements |
 | 🔊 | Pionowy pasek głośności i jasności przy prawej krawędzi | Ustawienia → Sterowanie → **Pionowy pasek** | MediaMate |
 | 🇵🇱 | Interfejs po polsku | język systemu | — |
 
@@ -76,12 +76,19 @@ Wbudowany [Slidr-Free](https://github.com/YuriGao/slidr-free) — działa w proc
 
 ---
 
-## ⌨️ Mapowanie klawiszy
+## ⌨️ Klawiatura w stylu Windows
 
-Zamiana klawiszy przez systemowe `hidutil` — **bez przechwytywania klawiatury**, więc nie spowalnia systemu jak Karabiner.
+Skróty pod palcami tak jak w Windowsie: **kopiuj, wklej, zapisz** wciskasz lewym klawiszem w rogu (Ctrl+C, Ctrl+V, Ctrl+S), a nie kciukiem na ⌘. Zamiana działa przez systemowe `hidutil` — **bez przechwytywania klawiatury**, więc nie spowalnia systemu jak Karabiner.
 
-- Lista zamian **klawisz → klawisz** (Control, Shift, Option, Command, Caps Lock, Escape, Tab, Return, Delete, `, §, Fn — lewe i prawe osobno).
-- Domyślnie: lewy ⌘ ↔ lewy ⌃, prawy ⌘ ↔ prawy ⌥.
+| Wciskasz | Mac dostaje | Po co |
+|---|---|---|
+| lewy **Ctrl** | ⌘ Command | Ctrl+C / Ctrl+V / Ctrl+Z jak w Windowsie |
+| lewy **⌘** | ⌃ Control | Control nadal dostępny, tylko w innym miejscu |
+| prawy **⌘** | ⌥ Option | polskie znaki (ą, ę, ś…) prawym klawiszem obok spacji, jak AltGr |
+| prawy **⌥** | ⌘ Command | Command po prawej stronie |
+| **Caps Lock** | bez opóźnienia | reaguje od razu, bez przytrzymania |
+
+- Własne zamiany: lista **klawisz → klawisz** w Ustawienia → **Klawiatura** (Control, Shift, Option, Command, Caps Lock, Escape, Tab, Return, Delete, `, §, Fn — lewe i prawe osobno), dodawanie, usuwanie i **Przywróć domyślne** (powrót do układu w stylu Windows).
 - **Caps Lock bez opóźnienia.**
 - Ponawiane automatycznie po podłączeniu klawiatury (np. Bluetooth) i wybudzeniu Maca. Zmiany działają od razu.
 
