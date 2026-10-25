@@ -458,15 +458,15 @@ struct ContentView: View {
     private func notchScreenMenuCut(islandWidth: CGFloat) -> CGFloat {
         guard vm.notchState == .closed,
               !isNonNotchScreen,
-              !(isClaudeLimitPinned && claudeLimitService.activityOffset != nil),
               let menusRightEdge = menuBarLayout.appMenusRightEdge ?? lastKnownMenusRightEdge,
               let screen = NSScreen.screens.first(where: { $0.localizedName == currentScreenName }),
               let left = screen.auxiliaryTopLeftArea?.width,
               let right = screen.auxiliaryTopRightArea?.width else { return 0 }
         let physical = screen.frame.width - left - right
         let physicalLeft = screen.frame.midX - physical / 2
-        guard islandWidth > physical, menusRightEdge + MenuBarLayout.clearanceGap > physicalLeft - 60 else { return 0 }
-        return (islandWidth - physical) / 2
+        guard menusRightEdge + MenuBarLayout.clearanceGap > physicalLeft - 60 else { return 0 }
+        let islandLeft = screen.frame.midX - islandWidth / 2 + claudeLimitOffset
+        return min(max(0, physicalLeft - islandLeft), islandWidth)
     }
 
     private var claudeLimitOffset: CGFloat {
