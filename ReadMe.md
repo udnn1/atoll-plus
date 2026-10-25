@@ -12,7 +12,7 @@
 - Wskaźnik Caps Lock (bez napisu) używa tego samego jednostronnego skrzydła co pierścień: ikona po lewej (albo po prawej, gdy menu dochodzą do notcha), wyspa wystaje tylko z tej strony i o tyle samo co pierścień.
 - Najechanie na pierścień otwiera notch na karcie **Usage** ze szczegółami jak w menu claude-tray: limit 5h i 7d, reset, ostatni i następny odczyt, „Odśwież teraz”, wybór liczby (5h/7d) i pierścienia.
 - Włączanie i wyłączanie: **Ustawienia → Stats → Licznik limitu Claude** albo przełącznik **Limit Claude** w menu Atolla na pasku menu.
-- Gdy działa muzyka, timer albo inna aktywność, ma ona pierwszeństwo, a pierścień wraca po niej.
+- Gdy pojawia się inna stała aktywność (muzyka, Caps Lock, timer, przypomnienie, nagrywanie, pobieranie, LocalSend, skupienie, wskaźniki kamery/mikrofonu, aktywności rozszerzeń), pierścień zostaje, a wyspa poszerza się o tę aktywność. Przy Caps Lock pierścień stoi przy notchu, a ikona Caps Lock obok niego na zewnątrz. Przy aktywnościach z dwoma skrzydłami pierścień jest dodatkowym, zewnętrznym skrzydłem po lewej, a po prawej, gdy menu aplikacji dochodzą do notcha. Krótkie komunikaty (ładowarka, bateria, podgląd utworu, HUD-y) na chwilę zastępują zawartość wyspy jak dotąd.
 
 ### Gesty gładzika (wbudowany Slidr-Free)
 Kod [Slidr-Free](https://github.com/YuriGao/slidr-free) (MIT, licencja w `DynamicIsland/TrackpadGestures/LICENSE-slidr-free.txt`) działa wewnątrz Atolla, nie jako osobna aplikacja ani wpis w autostarcie. Startuje i kończy się razem z Atollem. Konfiguracja jest w **Ustawienia → Gładzik** i zawiera te same opcje co Slidr-Free: Overview, Edge Gestures, Corner Shortcuts, Middle Click i Diagnostics.

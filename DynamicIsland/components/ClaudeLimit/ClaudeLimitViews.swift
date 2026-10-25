@@ -34,7 +34,7 @@ struct ClaudeLimitLiveActivity: View {
     @Default(.claudeLimitShowRing) private var showRing
 
     var body: some View {
-        NotchSingleWingActivity(reportsRingRange: true) { size in
+        NotchSingleWingActivity(reportsRingRange: true) { size, _ in
             ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
         }
     }
@@ -45,7 +45,8 @@ struct NotchSingleWingActivity<Content: View>: View {
     @ObservedObject private var service = ClaudeLimitService.shared
     @ObservedObject private var menuBarLayout = MenuBarLayout.shared
     var reportsRingRange = false
-    @ViewBuilder let content: (CGFloat) -> Content
+    var itemCount = 1
+    @ViewBuilder let content: (CGFloat, Bool) -> Content
     @State private var ownerID = UUID()
 
     private enum Placement { case left, right, hidden }
@@ -57,13 +58,14 @@ struct NotchSingleWingActivity<Content: View>: View {
             let physical = physicalNotchWidth
             if let physical {
                 let wing = max(16, vm.effectiveClosedNotchHeight - 12)
-                let ringSide = shapePadding + 2 + wing
-                let placement = resolvePlacement(extension: 2 + wing + shapePadding, physicalWidth: physical)
+                let itemsWidth = wing * CGFloat(itemCount) + 4 * CGFloat(itemCount - 1)
+                let ringSide = shapePadding + 2 + itemsWidth
+                let placement = resolvePlacement(extension: 2 + itemsWidth + shapePadding, physicalWidth: physical)
                 let offset: CGFloat = placement == .left ? -ringSide / 2 : placement == .right ? ringSide / 2 : 0
-                let range = ringRange(placement: placement, physicalWidth: physical, extent: 2 + wing + shapePadding)
+                let range = ringRange(placement: placement, physicalWidth: physical, extent: itemCount > 1 ? 4 + wing : 2 + wing + shapePadding)
                 HStack(spacing: 0) {
                     if placement == .left {
-                        ringView(size: wing)
+                        ringView(size: wing, isLeft: true)
                             .padding(.trailing, shapePadding + 2)
                             .frame(width: ringSide, alignment: .trailing)
                     }
@@ -71,7 +73,7 @@ struct NotchSingleWingActivity<Content: View>: View {
                         .fill(Color.black)
                         .frame(width: max(physical - 2 * shapePadding, 20))
                     if placement == .right {
-                        ringView(size: wing)
+                        ringView(size: wing, isLeft: false)
                             .padding(.leading, shapePadding + 2)
                             .frame(width: ringSide, alignment: .leading)
                     }
@@ -86,13 +88,14 @@ struct NotchSingleWingActivity<Content: View>: View {
                 .onChange(of: placement) { _, _ in if reportsRingRange { service.ringScreenRange = range } }
             } else {
                 let wing = max(16, vm.effectiveClosedNotchHeight - 12)
+                let itemsWidth = wing * CGFloat(itemCount) + 4 * CGFloat(itemCount - 1)
                 HStack(spacing: 0) {
-                    ringView(size: wing)
-                        .frame(width: wing, alignment: .center)
+                    ringView(size: wing, isLeft: true)
+                        .frame(width: itemsWidth, alignment: .center)
                     Rectangle()
                         .fill(Color.black)
                         .frame(width: vm.closedNotchSize.width)
-                    Color.clear.frame(width: wing)
+                    Color.clear.frame(width: itemsWidth)
                 }
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
                 .onAppear {
@@ -124,8 +127,8 @@ struct NotchSingleWingActivity<Content: View>: View {
         return screen.frame.width - left - right
     }
 
-    private func ringView(size: CGFloat) -> some View {
-        content(size)
+    private func ringView(size: CGFloat, isLeft: Bool) -> some View {
+        content(size, isLeft)
             .transition(.opacity)
     }
 
@@ -282,5 +285,80 @@ struct ClaudeLimitDetailsView: View {
 
     private var nextLine: String {
         "Następny odczyt: ~\(ClaudeLimitService.clock(service.nextAt))"
+    }
+}
+
+struct ClaudeCompanionWing<Content: View>: View {
+    @EnvironmentObject var vm: DynamicIslandViewModel
+    @ObservedObject private var service = ClaudeLimitService.shared
+    @ObservedObject private var menuBarLayout = MenuBarLayout.shared
+    @Default(.claudeLimitMetric) private var metric
+    @Default(.claudeLimitShowRing) private var showRing
+    let active: Bool
+    @ViewBuilder let content: () -> Content
+    @State private var ownerID = UUID()
+    @State private var contentWidth: CGFloat = 0
+
+    var body: some View {
+        if active {
+            let wing = max(16, vm.effectiveClosedNotchHeight - 12)
+            let ringWidth = wing + 6
+            let notched = physicalNotchWidth != nil
+            let onRight = notched && menusReachNotch
+            let offset: CGFloat = notched ? (onRight ? ringWidth / 2 : -ringWidth / 2) : 0
+            HStack(spacing: 0) {
+                if !onRight { ring(size: wing).frame(width: ringWidth, alignment: .leading) }
+                content()
+                if onRight { ring(size: wing).frame(width: ringWidth, alignment: .trailing) }
+            }
+            .background(GeometryReader { geo in
+                Color.clear
+                    .onAppear { contentWidth = geo.size.width }
+                    .onChange(of: geo.size.width) { _, value in contentWidth = value }
+            })
+            .onAppear { publish(offset: offset, onRight: onRight, ringWidth: ringWidth) }
+            .onChange(of: offset) { _, value in publish(offset: value, onRight: onRight, ringWidth: ringWidth) }
+            .onChange(of: contentWidth) { _, _ in publish(offset: offset, onRight: onRight, ringWidth: ringWidth) }
+            .onDisappear {
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) { service.clearActivityOffset(owner: ownerID) }
+                service.ringScreenRange = nil
+            }
+        } else {
+            content()
+        }
+    }
+
+    private func ring(size: CGFloat) -> some View {
+        ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+    }
+
+    private func publish(offset: CGFloat, onRight: Bool, ringWidth: CGFloat) {
+        service.setActivityOffset(physicalNotchWidth != nil ? offset : nil, owner: ownerID)
+        guard let screen = currentScreen, contentWidth > 0 else { return }
+        let pad = cornerRadiusInsets.closed.bottom
+        let center = screen.frame.midX + (physicalNotchWidth != nil ? offset : 0)
+        let left = center - contentWidth / 2 - pad
+        let right = center + contentWidth / 2 + pad
+        service.ringScreenRange = onRight ? (right - pad - ringWidth)...right : left...(left + pad + ringWidth)
+    }
+
+    private var currentScreen: NSScreen? {
+        let name = vm.screen ?? DynamicIslandViewCoordinator.shared.selectedScreen
+        return NSScreen.screens.first(where: { $0.localizedName == name })
+    }
+
+    private var physicalNotchWidth: CGFloat? {
+        guard let screen = currentScreen, screen.safeAreaInsets.top > 0,
+              let left = screen.auxiliaryTopLeftArea?.width,
+              let right = screen.auxiliaryTopRightArea?.width else { return nil }
+        return screen.frame.width - left - right
+    }
+
+    private var menusReachNotch: Bool {
+        guard let screen = currentScreen, let physical = physicalNotchWidth,
+              let menus = menuBarLayout.appMenusRightEdge else { return false }
+        return menus + MenuBarLayout.clearanceGap > screen.frame.midX - physical / 2 - 60
     }
 }

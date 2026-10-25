@@ -476,14 +476,31 @@ struct ContentView: View {
     }
 
     private var capsLockWingActivity: some View {
-        NotchSingleWingActivity { size in
-            Image(systemName: "capslock.fill")
-                .font(.system(size: size * 0.7, weight: .semibold))
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(capsLockTintMode.color)
-                .frame(width: size, height: size)
+        let withRing = isClaudeLimitPinned
+        return NotchSingleWingActivity(reportsRingRange: withRing, itemCount: withRing ? 2 : 1) { size, isLeft in
+            HStack(spacing: 4) {
+                if withRing && !isLeft { claudeCompanionRing(size: size) }
+                Image(systemName: "capslock.fill")
+                    .font(.system(size: size * 0.7, weight: .semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(capsLockTintMode.color)
+                    .frame(width: size, height: size)
+                if withRing && isLeft { claudeCompanionRing(size: size) }
+            }
         }
         .transition(.identity)
+    }
+
+    private func claudeCompanionRing(size: CGFloat) -> some View {
+        ClaudeLimitRing(
+            pct: claudeLimitService.displayedPct(metric: Defaults[.claudeLimitMetric]),
+            showRing: Defaults[.claudeLimitShowRing],
+            size: size
+        )
+    }
+
+    private var claudeCompanionActive: Bool {
+        isClaudeLimitPinned && !coordinator.expandingView.show
     }
 
     private var isClaudeLimitPinned: Bool {
@@ -1220,36 +1237,40 @@ struct ContentView: View {
                               capsLockWingActivity
                           }
                       } else if canShowMusicDuringExpansion && musicPairingEligible {
-                          MusicLiveActivity(secondary: musicSecondary)
+                          ClaudeCompanionWing(active: claudeCompanionActive) {
+                              MusicLiveActivity(secondary: musicSecondary)
+                          }
                               .id("closed-music-live-activity")
                               .transition(closedLiveActivitySwapTransition)
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .timer) && vm.notchState == .closed && timerManager.isTimerActive && coordinator.timerLiveActivityEnabled && !vm.hideOnClosed {
-                          TimerLiveActivity()
+                          ClaudeCompanionWing(active: claudeCompanionActive) { TimerLiveActivity() }
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .reminder) && vm.notchState == .closed && reminderManager.isActive && enableReminderLiveActivity && !vm.hideOnClosed {
-                          ReminderLiveActivity()
+                          ClaudeCompanionWing(active: claudeCompanionActive) { ReminderLiveActivity() }
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .recording) && vm.notchState == .closed && recordingManager.isRecording && Defaults[.enableScreenRecordingDetection] && Defaults[.showRecordingIndicator] && !vm.hideOnClosed && !musicPairingEligible {
-                          RecordingLiveActivity(hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
+                          ClaudeCompanionWing(active: claudeCompanionActive) { RecordingLiveActivity(hoverAnimation: $isHovering, gestureProgress: $gestureProgress) }
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .download) && vm.notchState == .closed && downloadManager.isDownloading && Defaults[.enableDownloadListener] && !vm.hideOnClosed {
-                          DownloadLiveActivity()
+                          ClaudeCompanionWing(active: claudeCompanionActive) { DownloadLiveActivity() }
                               .transition(.blurReplace.animation(.interactiveSpring(dampingFraction: 1.2)))
                       } else if !isCurrentScreenExpansionVisible && vm.notchState == .closed && localSendLiveActivityActive && !vm.hideOnClosed {
-                          LocalSendLiveActivity()
+                          ClaudeCompanionWing(active: claudeCompanionActive) { LocalSendLiveActivity() }
                               .transition(.blurReplace.animation(.interactiveSpring(dampingFraction: 1.2)))
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .doNotDisturb) && vm.notchState == .closed && Defaults[.enableDoNotDisturbDetection] && Defaults[.showDoNotDisturbIndicator] && (doNotDisturbManager.isDoNotDisturbActive || doNotDisturbManager.isFocusToastDismissing) && !vm.hideOnClosed && !lockScreenManager.isLocked {
-                          DoNotDisturbLiveActivity()
+                          ClaudeCompanionWing(active: claudeCompanionActive) { DoNotDisturbLiveActivity() }
                     } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .privacy) && vm.notchState == .closed && privacyManager.hasAnyIndicator && (Defaults[.enableCameraDetection] || Defaults[.enableMicrophoneDetection]) && !vm.hideOnClosed {
-                        PrivacyLiveActivity()
+                        ClaudeCompanionWing(active: claudeCompanionActive) { PrivacyLiveActivity() }
                       } else if let extensionPayload = extensionStandalonePayload {
                           let layout = extensionStandaloneLayout(
                               for: extensionPayload,
                               notchHeight: vm.effectiveClosedNotchHeight,
                               isHovering: isHovering
                           )
-                          ExtensionLiveActivityStandaloneView(
-                              payload: extensionPayload,
-                              layout: layout,
-                              isHovering: isHovering
-                          )
+                          ClaudeCompanionWing(active: claudeCompanionActive) {
+                              ExtensionLiveActivityStandaloneView(
+                                  payload: extensionPayload,
+                                  layout: layout,
+                                  isHovering: isHovering
+                              )
+                          }
                       } else if isClaudeLimitPinned && !coordinator.expandingView.show {
                           ClaudeLimitLiveActivity()
                               .transition(.identity)
