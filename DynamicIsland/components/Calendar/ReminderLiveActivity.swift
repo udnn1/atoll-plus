@@ -61,6 +61,7 @@ struct ReminderLiveActivity: View {
             Rectangle()
                 .fill(.black)
                 .frame(width: vm.closedNotchSize.width, height: notchContentHeight)
+                .claudeRingSlot()
 
             Color.clear
                 .frame(width: rightWingWidth(for: reminder, now: now), height: notchContentHeight)

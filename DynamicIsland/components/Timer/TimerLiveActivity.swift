@@ -294,6 +294,7 @@ struct TimerLiveActivity: View {
         Rectangle()
             .fill(.black)
             .frame(width: middleSectionWidth, height: notchContentHeight)
+            .claudeRingSlot()
     }
 
     @ViewBuilder

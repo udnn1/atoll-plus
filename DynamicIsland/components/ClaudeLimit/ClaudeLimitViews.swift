@@ -39,7 +39,7 @@ struct ClaudeLimitLiveActivity: View {
         NotchSingleWingActivity(reportsRingRange: true, itemCount: showsCapsLock ? 2 : 1) { size, isLeft in
             HStack(spacing: 4) {
                 if showsCapsLock && isLeft { capsIcon(size: size) }
-                ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+                Color.clear.frame(width: size, height: size).claudeRingAnchor()
                 if showsCapsLock && !isLeft { capsIcon(size: size) }
             }
         }
@@ -316,16 +316,12 @@ struct ClaudeCompanionWing<Content: View>: View {
 
     var body: some View {
         if active {
-            let wing = max(16, vm.effectiveClosedNotchHeight - 12)
-            let ringWidth = wing + 6
+            let ringWidth = ClaudeRingSlot.width(closedHeight: vm.effectiveClosedNotchHeight)
             let notched = physicalNotchWidth != nil
             let onRight = notched && menusReachNotch
             let offset: CGFloat = notched ? (onRight ? ringWidth / 2 : -ringWidth / 2) : 0
-            HStack(spacing: 0) {
-                if !onRight { ring(size: wing).frame(width: ringWidth, alignment: .leading) }
-                content()
-                if onRight { ring(size: wing).frame(width: ringWidth, alignment: .trailing) }
-            }
+            content()
+            .environment(\.claudeRingSide, onRight ? .trailing : .leading)
             .background(GeometryReader { geo in
                 Color.clear
                     .onAppear { contentWidth = geo.size.width }
@@ -345,18 +341,13 @@ struct ClaudeCompanionWing<Content: View>: View {
         }
     }
 
-    private func ring(size: CGFloat) -> some View {
-        ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
-    }
-
     private func publish(offset: CGFloat, onRight: Bool, ringWidth: CGFloat) {
         service.setActivityOffset(physicalNotchWidth != nil ? offset : nil, owner: ownerID)
-        guard let screen = currentScreen, contentWidth > 0 else { return }
-        let pad = cornerRadiusInsets.closed.bottom
-        let center = screen.frame.midX + (physicalNotchWidth != nil ? offset : 0)
-        let left = center - contentWidth / 2 - pad
-        let right = center + contentWidth / 2 + pad
-        service.ringScreenRange = onRight ? (right - pad - ringWidth)...right : left...(left + pad + ringWidth)
+        guard let screen = currentScreen else { return }
+        let half = (physicalNotchWidth ?? vm.closedNotchSize.width) / 2
+        let notchLeft = screen.frame.midX - half
+        let notchRight = screen.frame.midX + half
+        service.ringScreenRange = onRight ? notchRight...(notchRight + ringWidth + 4) : (notchLeft - ringWidth - 4)...notchLeft
     }
 
     private var currentScreen: NSScreen? {
@@ -375,5 +366,109 @@ struct ClaudeCompanionWing<Content: View>: View {
         guard let screen = currentScreen, let physical = physicalNotchWidth,
               let menus = menuBarLayout.appMenusRightEdge else { return false }
         return menus + MenuBarLayout.clearanceGap > screen.frame.midX - physical / 2 - 60
+    }
+}
+
+enum ClaudeRingSide {
+    case none
+    case leading
+    case trailing
+}
+
+private struct ClaudeRingSideKey: EnvironmentKey {
+    static let defaultValue = ClaudeRingSide.none
+}
+
+extension EnvironmentValues {
+    var claudeRingSide: ClaudeRingSide {
+        get { self[ClaudeRingSideKey.self] }
+        set { self[ClaudeRingSideKey.self] = newValue }
+    }
+}
+
+enum ClaudeRingSlot {
+    static func ringSize(closedHeight: CGFloat) -> CGFloat {
+        max(16, closedHeight - 12)
+    }
+
+    static func width(closedHeight: CGFloat) -> CGFloat {
+        ringSize(closedHeight: closedHeight) + 6
+    }
+}
+
+private struct ClaudeRingSlotModifier: ViewModifier {
+    @Environment(\.claudeRingSide) private var side
+    @EnvironmentObject var vm: DynamicIslandViewModel
+    @ObservedObject private var service = ClaudeLimitService.shared
+    @Default(.claudeLimitMetric) private var metric
+    @Default(.claudeLimitShowRing) private var showRing
+
+    func body(content: Content) -> some View {
+        HStack(spacing: 0) {
+            if side == .leading { slot }
+            content
+            if side == .trailing { slot }
+        }
+    }
+
+    private var slot: some View {
+        let size = ClaudeRingSlot.ringSize(closedHeight: vm.effectiveClosedNotchHeight)
+        return Color.clear
+            .frame(width: ClaudeRingSlot.width(closedHeight: vm.effectiveClosedNotchHeight))
+            .overlay(Color.clear.frame(width: size, height: size).claudeRingAnchor())
+    }
+}
+
+extension View {
+    func claudeRingSlot() -> some View {
+        modifier(ClaudeRingSlotModifier())
+    }
+}
+
+struct ClaudeRingExtraWidthReader {
+    static func extra(side: ClaudeRingSide, closedHeight: CGFloat) -> CGFloat {
+        side == .none ? 0 : ClaudeRingSlot.width(closedHeight: closedHeight)
+    }
+}
+
+struct ClaudeRingAnchorKey: PreferenceKey {
+    static var defaultValue: Anchor<CGRect>? = nil
+    static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
+        value = value ?? nextValue()
+    }
+}
+
+extension View {
+    func claudeRingAnchor() -> some View {
+        anchorPreference(key: ClaudeRingAnchorKey.self, value: .bounds) { $0 }
+    }
+
+    func claudeRingOverlay(enabled: Bool) -> some View {
+        overlayPreferenceValue(ClaudeRingAnchorKey.self) { anchor in
+            ClaudeRingOverlayLayer(anchor: enabled ? anchor : nil)
+        }
+    }
+}
+
+private struct ClaudeRingOverlayLayer: View {
+    let anchor: Anchor<CGRect>?
+    @ObservedObject private var service = ClaudeLimitService.shared
+    @Default(.claudeLimitMetric) private var metric
+    @Default(.claudeLimitShowRing) private var showRing
+    @State private var lastFrame: CGRect = .zero
+
+    var body: some View {
+        GeometryReader { geo in
+            let frame = anchor.map { geo[$0] } ?? lastFrame
+            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: max(frame.height, 1))
+                .frame(width: frame.width, height: frame.height)
+                .position(x: frame.midX, y: frame.midY)
+                .opacity(anchor == nil ? 0 : 1)
+                .animation(.spring(response: 0.38, dampingFraction: 0.82), value: frame)
+                .animation(.easeInOut(duration: 0.2), value: anchor == nil)
+                .onChange(of: frame) { _, value in if anchor != nil { lastFrame = value } }
+                .onAppear { if anchor != nil { lastFrame = frame } }
+        }
+        .allowsHitTesting(false)
     }
 }

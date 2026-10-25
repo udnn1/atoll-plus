@@ -479,13 +479,13 @@ struct ContentView: View {
         let withRing = isClaudeLimitPinned
         return NotchSingleWingActivity(reportsRingRange: withRing, itemCount: withRing ? 2 : 1) { size, isLeft in
             HStack(spacing: 4) {
-                if withRing && !isLeft { claudeCompanionRing(size: size) }
+                if withRing && !isLeft { Color.clear.frame(width: size, height: size).claudeRingAnchor() }
                 Image(systemName: "capslock.fill")
                     .font(.system(size: size * 0.7, weight: .semibold))
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(capsLockTintMode.color)
                     .frame(width: size, height: size)
-                if withRing && isLeft { claudeCompanionRing(size: size) }
+                if withRing && isLeft { Color.clear.frame(width: size, height: size).claudeRingAnchor() }
             }
         }
         .transition(.identity)
@@ -712,6 +712,7 @@ struct ContentView: View {
 
     private var mainLayoutBase: some View {
         NotchLayout()
+            .claudeRingOverlay(enabled: isClaudeLimitPinned)
             .frame(alignment: .top)
             // Connectivity HUD metrics already describe the complete surface.
             // Applying the regular closed-notch inset here makes that surface
@@ -1569,6 +1570,7 @@ struct ContentView: View {
             Rectangle()
                 .fill(.black)
                 .frame(width: effectiveCenterWidth, height: notchContentHeight)
+                .claudeRingSlot()
                 .overlay(
                     HStack(alignment: .top) {
                         if(coordinator.expandingView.show && coordinator.expandingView.type == .music) {

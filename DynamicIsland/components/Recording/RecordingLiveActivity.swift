@@ -21,6 +21,8 @@ import Defaults
 
 struct RecordingLiveActivity: View {
     @EnvironmentObject var vm: DynamicIslandViewModel
+    @Environment(\.claudeRingSide) private var claudeRingSide
+    private var claudeRingExtra: CGFloat { ClaudeRingExtraWidthReader.extra(side: claudeRingSide, closedHeight: vm.effectiveClosedNotchHeight) }
     @ObservedObject var recordingManager = ScreenRecordingManager.shared
     @Default(.recordingHoverStyle) private var recordingHoverStyle
     @Default(.recordingControlMode) private var recordingControlMode
@@ -45,14 +47,15 @@ struct RecordingLiveActivity: View {
                     Rectangle()
                         .fill(.black)
                         .frame(width: centerWidth, height: vm.effectiveClosedNotchHeight)
+                        .claudeRingSlot()
 
                     trailingStatus
                         .frame(width: trailingWidth, height: rowHeight)
                 }
-                .frame(width: hudWidth, height: vm.effectiveClosedNotchHeight)
+                .frame(width: hudWidth + claudeRingExtra, height: vm.effectiveClosedNotchHeight)
             }
         }
-        .frame(width: hudWidth, height: hudHeight, alignment: .bottom)
+        .frame(width: hudWidth + claudeRingExtra, height: hudHeight, alignment: .bottom)
         .accessibilityElement(children: .contain)
         .onAppear {
             withAnimation(.smooth(duration: 0.32)) {

@@ -84,6 +84,7 @@ struct LocalSendLiveActivity: View {
                         + (isHovering ? 8 : 0)
                         + (isActive ? 40 : 0)
                 )
+                .claudeRingSlot()
             
             // Right side: progress ring or status icon
             Color.clear

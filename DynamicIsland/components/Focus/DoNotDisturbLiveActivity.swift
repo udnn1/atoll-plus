@@ -22,6 +22,8 @@ import SwiftUI
 
 struct DoNotDisturbLiveActivity: View {
     @EnvironmentObject var vm: DynamicIslandViewModel
+    @Environment(\.claudeRingSide) private var claudeRingSide
+    private var claudeRingExtra: CGFloat { ClaudeRingExtraWidthReader.extra(side: claudeRingSide, closedHeight: vm.effectiveClosedNotchHeight) }
     @ObservedObject var manager = DoNotDisturbManager.shared
     @Default(.showDoNotDisturbLabel) private var showLabelSetting
     @Default(.focusIndicatorNonPersistent) private var focusToastMode
@@ -46,11 +48,12 @@ struct DoNotDisturbLiveActivity: View {
             Rectangle()
                 .fill(Color.black)
                 .frame(width: centerSegmentWidth)
+                .claudeRingSlot()
 
             labelWing
                 .frame(width: labelWingWidth, height: wingHeight)
         }
-        .frame(width: notchEnvelopeWidth, height: vm.effectiveClosedNotchHeight)
+        .frame(width: notchEnvelopeWidth + claudeRingExtra, height: vm.effectiveClosedNotchHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityDescription)
         .onAppear(perform: handleInitialState)

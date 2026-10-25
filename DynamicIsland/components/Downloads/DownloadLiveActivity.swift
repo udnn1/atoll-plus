@@ -99,6 +99,7 @@ struct DownloadLiveActivity: View {
                         + (downloadManager.isDownloading ? 40 : 0)
                         + speedAllowance
                 )
+                .claudeRingSlot()
                 .animation(.smooth(duration: 0.25), value: speedAllowance)
             
             // Right side: indeterminate-style progress bar

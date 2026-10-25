@@ -56,6 +56,7 @@ struct ExtensionLiveActivityStandaloneView: View {
                 .fill(Color.black)
                 .frame(width: layout.centerWidth, height: contentHeight)
                 .overlay(EmptyView())
+                .claudeRingSlot()
 
             ExtensionMusicWingView(
                 payload: payload,
