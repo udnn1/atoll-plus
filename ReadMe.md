@@ -163,15 +163,24 @@ Token Claude trafia wyłącznie do `api.anthropic.com`. Repozytorium nie zawiera
 </details>
 
 <details>
-<summary><b>🔄 Aktualizacje z oryginału</b></summary>
+<summary><b>🔄 Aktualizacje</b></summary>
+
+Atoll Plus **nie ma automatycznych aktualizacji** — każdy buduje aplikację sam ze źródeł. Wbudowany w oryginał aktualizator (Sparkle) jest wyłączony: nie sprawdza nowych wersji, a z menu i Ustawień zniknęły „Sprawdź aktualizacje” i wybór kanału. Gdyby działał, zainstalowałby oficjalny Atoll w miejsce Atoll Plus.
+
+Nowa wersja:
+
+```bash
+git pull
+./scripts/build-local.sh
+```
+
+Zmiany z oryginalnego Atolla można dociągnąć ręcznie:
 
 ```bash
 git remote add upstream https://github.com/Ebullioscopic/Atoll.git
 git fetch upstream
 git merge upstream/dev
 ```
-
-Wbudowany aktualizator (Sparkle) wskazuje na wydania oryginalnego Atolla — instalacja aktualizacji z poziomu aplikacji zastąpi Atoll Plus wersją oficjalną.
 
 </details>
 

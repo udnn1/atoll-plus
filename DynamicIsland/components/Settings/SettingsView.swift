@@ -4182,7 +4182,18 @@ struct About: View {
                     Text("Version info")
                 }
 
-                UpdaterSettingsView(updater: updaterController.updater)
+                Section {
+                    Text("Atoll Plus nie korzysta z aktualizacji oryginalnego Atolla — zastąpiłyby tę wersję. Nowe wersje buduje się ze źródeł skryptem scripts/build-local.sh.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                    Button("Otwórz repozytorium Atoll Plus") {
+                        if let url = URL(string: "https://github.com/udnn1/atoll-plus") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                } header: {
+                    Text("Aktualizacje")
+                }
 
                 HStack(spacing: 30) {
                     Spacer(minLength: 0)
@@ -4224,44 +4235,6 @@ struct About: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.bottom, 5)
 
-                Section {
-                    ForEach(UpdateChannel.availableChannels) { channel in
-                        Button {
-                            updateChannel = channel
-                        } label: {
-                            HStack(spacing: 10) {
-                                Image(systemName: channel.badgeIcon)
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(Color(channel.badgeColor))
-                                    .frame(width: 20, alignment: .center)
-
-                                VStack(alignment: .leading, spacing: 1) {
-                                    Text(LocalizedStringKey(channel.displayName))
-                                        .foregroundStyle(.primary)
-                                    Text(LocalizedStringKey(channel.description))
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                Spacer()
-
-                                if updateChannel == channel {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .semibold))
-                                        .foregroundStyle(Color(channel.badgeColor))
-                                }
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    Text("Current build: \(UpdateChannel.buildChannel.displayName)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } header: {
-                    Text("Update channel")
-                }
                 VStack(spacing: 0) {
                     Divider()
                         .padding(.bottom, 5)
@@ -4279,7 +4252,6 @@ struct About: View {
             //                openWindow(id: "onboarding")
             //            }
             //            .controlSize(.extraLarge)
-            CheckForUpdatesView(updater: updaterController.updater)
         }
         .navigationTitle("About")
     }
