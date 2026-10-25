@@ -57,6 +57,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
     case calendar
     case hudAndOSD
     case battery
+    case trackpad
     case stats
     case clipboard
     case screenAssistant
@@ -75,7 +76,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general, .appearance:                                          return .core
         case .media, .liveActivities, .lockScreen, .devices:                 return .mediaAndDisplay
-        case .hudAndOSD, .battery:                                           return .system
+        case .hudAndOSD, .battery, .trackpad:                                return .system
         case .timer, .calendar, .notes:                                      return .productivity
         case .clipboard, .screenAssistant, .colorPicker, .shelf,
              .downloads, .shortcuts:                                         return .utilities
@@ -98,6 +99,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .calendar: return String(localized: "Calendar")
         case .hudAndOSD: return String(localized: "Controls")
         case .battery: return String(localized: "Battery")
+        case .trackpad: return "Gładzik"
         case .stats: return String(localized: "Stats")
         case .clipboard: return String(localized: "Clipboard")
         case .screenAssistant: return String(localized: "Screen Assistant")
@@ -124,6 +126,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .calendar: return "calendar"
         case .hudAndOSD: return "dial.medium.fill"
         case .battery: return "battery.100.bolt"
+        case .trackpad: return "rectangle.and.hand.point.up.left"
         case .stats: return "chart.xyaxis.line"
         case .clipboard: return "clipboard"
         case .screenAssistant: return "brain.head.profile"
@@ -150,6 +153,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .calendar: return .cyan
         case .hudAndOSD: return .indigo
         case .battery: return Color(red: 0.202, green: 0.783, blue: 0.348, opacity: 1.000)
+        case .trackpad: return Color(red: 0.35, green: 0.45, blue: 0.95, opacity: 1.000)
         case .stats: return .teal
         case .clipboard: return .mint
         case .screenAssistant: return .pink
@@ -806,6 +810,7 @@ struct SettingsView: View {
             // System
             .hudAndOSD,
             .battery,
+            .trackpad,
             // Productivity
             .timer,
             .calendar,
@@ -1066,6 +1071,8 @@ struct SettingsView: View {
             SettingsForm(tab: .battery) {
                 Charge()
             }
+        case .trackpad:
+            TrackpadGesturesSettingsPane()
         case .stats:
             SettingsForm(tab: .stats) {
                 StatsSettings()

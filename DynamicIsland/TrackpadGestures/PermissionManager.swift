@@ -1,0 +1,43 @@
+import AppKit
+import ApplicationServices
+import ServiceManagement
+
+final class PermissionManager: ObservableObject {
+    @Published private(set) var snapshot: PermissionSnapshot
+
+    init() {
+        snapshot = Self.currentSnapshot()
+    }
+
+    static func currentSnapshot() -> PermissionSnapshot {
+        PermissionSnapshot(
+            accessibility: AXIsProcessTrustedWithOptions(nil) ? .granted : .denied
+        )
+    }
+
+    @discardableResult
+    func currentSnapshot() -> PermissionSnapshot {
+        let updated = Self.currentSnapshot()
+        snapshot = updated
+        return updated
+    }
+
+    func promptForAccessibility() {
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        _ = AXIsProcessTrustedWithOptions(options)
+        currentSnapshot()
+    }
+
+    func openAccessibilitySettings() {
+        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+        NSWorkspace.shared.open(url)
+    }
+
+    func setLaunchAtLogin(_ enabled: Bool) throws {
+        if enabled {
+            try SMAppService.mainApp.register()
+        } else {
+            try SMAppService.mainApp.unregister()
+        }
+    }
+}

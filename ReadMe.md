@@ -13,6 +13,18 @@
 - Włączanie i wyłączanie: **Ustawienia → Stats → Licznik limitu Claude** albo przełącznik **Limit Claude** w menu Atolla na pasku menu.
 - Gdy działa muzyka, timer albo inna aktywność, ma ona pierwszeństwo, a pierścień wraca po niej.
 
+### Gesty gładzika (wbudowany Slidr-Free)
+Kod [Slidr-Free](https://github.com/YuriGao/slidr-free) (MIT, licencja w `DynamicIsland/TrackpadGestures/LICENSE-slidr-free.txt`) działa wewnątrz Atolla, nie jako osobna aplikacja ani wpis w autostarcie. Startuje i kończy się razem z Atollem. Konfiguracja jest w **Ustawienia → Gładzik** i zawiera te same opcje co Slidr-Free: Overview, Edge Gestures, Corner Shortcuts, Middle Click i Diagnostics.
+
+Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Trackpad). Dotyk czyta prywatny framework Apple MultitouchSupport.
+
+- **Krawędzie:** przesunięcie jednym palcem w górę lub w dół przy lewej albo prawej krawędzi zmienia przypisaną wartość: jasność, głośność albo nic. Gest wysyła systemowy klawisz głośności lub jasności, więc wartość zmienia się o krok Atolla i pokazuje się HUD Atolla (Vertical Bar). Górna krawędź przy przesunięciu w prawo lub w lewo przełącza kartę w Safari, Chrome i Edge. Opcja „Cycle between first and last tabs” zawija z ostatniej karty na pierwszą.
+- **Haptyka:** każdy krok głośności, jasności i karty daje wibrację `levelChange`, a otwarcie aplikacji z rogu wibrację `alignment`.
+- **Rogi:** podwójne stuknięcie w róg gładzika otwiera przypisaną aplikację. Jeśli jest już na pierwszym planie, jej okno się minimalizuje albo przywraca.
+- **Środkowe kliknięcie:** stuknięcie albo dociśnięcie dokładnie N palcami (3 lub 4).
+- **Parametry:** szerokość strefy krawędzi, odległość ruchu na jeden krok osobno dla każdej krawędzi, strefa i czas podwójnego stuknięcia w rogu, bezpieczny 15-sekundowy test gestów bez wykonywania akcji.
+- **Moja konfiguracja** przeniosła się automatycznie z `com.slidr.free` przy pierwszym uruchomieniu: lewa krawędź = jasność, prawa = głośność, górna wyłączona, środkowe kliknięcie wyłączone.
+
 ### Poprawki błędów
 - Na monitorze bez notcha schowana wyspa wysuwa się przy animacji ładowania, włączaniu muzyki i innych animacjach (wcześniej animacja grała poza ekranem).
 - Rozmycie zawartości notcha znika po przewijaniu kółkiem myszy. Wcześniej myszy bez fazy końca gestu (np. Logitech) zostawiały rozmycie na stałe.
