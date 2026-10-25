@@ -152,7 +152,7 @@ struct InlineHUD: View {
             }
 
             if type == .capsLock && !showCapsLockLabel {
-                return 30
+                return enableMinimalisticUI ? 48 : 56
             }
 
             return 92
@@ -172,7 +172,7 @@ struct InlineHUD: View {
                 }
 
                 if type == .capsLock && !showCapsLockLabel {
-                    return 30
+                    return enableMinimalisticUI ? 36 : 44
                 }
 
                 return 88
@@ -200,7 +200,7 @@ struct InlineHUD: View {
                 if showCapsLockLabel {
                     return enableMinimalisticUI ? 76 : 88
                 }
-                return 30
+                return 0
             }
 
             return 92
@@ -225,7 +225,7 @@ struct InlineHUD: View {
                 }
 
                 if type == .capsLock {
-                    return showCapsLockLabel ? (enableMinimalisticUI ? 60 : 72) : 30
+                    return showCapsLockLabel ? (enableMinimalisticUI ? 60 : 72) : 0
                 }
 
                 return 90

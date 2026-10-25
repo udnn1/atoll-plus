@@ -9,6 +9,7 @@
 - Stan i zaszyfrowany token w tych samych plikach co claude-tray: `~/Library/Application Support/ClaudeLimitTray/`.
 - Wygląd jak ikona claude-tray: pierścień postępu z liczbą, kolory zielony (< 50%), bursztynowy (50–74%), pomarańczowy (75–89%), czerwony (≥ 90%).
 - Zamknięta wyspa jest stale wysunięta z pierścieniem. Na ekranie z notchem pierścień stoi obok fizycznego notcha, przeskakuje na prawą stronę, gdy menu aplikacji dochodzą do notcha, i chowa się, gdy po obu stronach brakuje miejsca. Notch wyspy zawsze trafia w fizyczny notch.
+- Wskaźnik Caps Lock (bez napisu) używa tego samego jednostronnego skrzydła co pierścień: ikona po lewej (albo po prawej, gdy menu dochodzą do notcha), wyspa wystaje tylko z tej strony i o tyle samo co pierścień.
 - Najechanie na pierścień otwiera notch na karcie **Usage** ze szczegółami jak w menu claude-tray: limit 5h i 7d, reset, ostatni i następny odczyt, „Odśwież teraz”, wybór liczby (5h/7d) i pierścienia.
 - Włączanie i wyłączanie: **Ustawienia → Stats → Licznik limitu Claude** albo przełącznik **Limit Claude** w menu Atolla na pasku menu.
 - Gdy działa muzyka, timer albo inna aktywność, ma ona pierwszeństwo, a pierścień wraca po niej.
@@ -19,7 +20,7 @@ Kod [Slidr-Free](https://github.com/YuriGao/slidr-free) (MIT, licencja w `Dynami
 Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Trackpad). Dotyk czyta prywatny framework Apple MultitouchSupport.
 
 - **Krawędzie:** przesunięcie jednym palcem w górę lub w dół przy lewej albo prawej krawędzi zmienia przypisaną wartość: jasność, głośność albo nic. Gest wysyła systemowy klawisz głośności lub jasności, więc wartość zmienia się o krok Atolla i pokazuje się HUD Atolla (Vertical Bar). Górna krawędź przy przesunięciu w prawo lub w lewo przełącza kartę w Safari, Chrome i Edge. Opcja „Cycle between first and last tabs” zawija z ostatniej karty na pierwszą.
-- **Haptyka:** każdy krok głośności, jasności i karty daje wibrację `levelChange`, a otwarcie aplikacji z rogu wibrację `alignment`.
+- **Haptyka:** każdy krok głośności, jasności i karty daje tyknięcie silniczkiem gładzika (`MTActuator`, działa też w tle), a otwarcie aplikacji z rogu tyknięcie o 2 poziomy mocniejsze. Siłę (1–6, domyślnie 2) ustawia suwak „Siła haptyki” w Gładzik → Przegląd, z przyciskiem „Wypróbuj”.
 - **Rogi:** podwójne stuknięcie w róg gładzika otwiera przypisaną aplikację. Jeśli jest już na pierwszym planie, jej okno się minimalizuje albo przywraca.
 - **Środkowe kliknięcie:** stuknięcie albo dociśnięcie dokładnie N palcami (3 lub 4).
 - **Parametry:** szerokość strefy krawędzi, odległość ruchu na jeden krok osobno dla każdej krawędzi, strefa i czas podwójnego stuknięcia w rogu, bezpieczny 15-sekundowy test gestów bez wykonywania akcji.

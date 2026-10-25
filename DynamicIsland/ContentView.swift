@@ -472,7 +472,18 @@ struct ContentView: View {
     }
 
     private var claudeLimitOffset: CGFloat {
-        isClaudeLimitPinned ? (claudeLimitService.activityOffset ?? 0) : 0
+        vm.notchState == .closed ? (claudeLimitService.activityOffset ?? 0) : 0
+    }
+
+    private var capsLockWingActivity: some View {
+        NotchSingleWingActivity { size in
+            Image(systemName: "capslock.fill")
+                .font(.system(size: size * 0.7, weight: .semibold))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(capsLockTintMode.color)
+                .frame(width: size, height: size)
+        }
+        .transition(.identity)
     }
 
     private var isClaudeLimitPinned: Bool {
@@ -1102,7 +1113,7 @@ struct ContentView: View {
     /// open notch, no accessibility permission, or menus that end before the
     /// content begins all leave the notch centred where it belongs.
     private var menuBarClearanceOffset: CGFloat {
-        if isClaudeLimitPinned, claudeLimitService.activityOffset != nil { return 0 }
+        if claudeLimitService.activityOffset != nil { return 0 }
         guard isNonNotchScreen else { return 0 }
         guard vm.notchState == .closed,
               !vm.hideOnClosed,
@@ -1191,15 +1202,23 @@ struct ContentView: View {
                         )
                         .id(batteryModel.activeTemporaryHUDToken)
                       } else if isSneakPeekVisibleOnCurrentScreen && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .timer) && (coordinator.sneakPeek.type != .reminder) && !coordinator.sneakPeek.type.isExtensionPayload && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
-                          InlineHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
-                              .transition(
-                                  coordinator.sneakPeek.type == .capsLock
-                                      ? AnyTransition.move(edge: .trailing).combined(with: .opacity)
-                                      : AnyTransition.opacity
-                              )
+                          if coordinator.sneakPeek.type == .capsLock && !showCapsLockLabel {
+                              capsLockWingActivity
+                          } else {
+                              InlineHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
+                                  .transition(
+                                      coordinator.sneakPeek.type == .capsLock
+                                          ? AnyTransition.move(edge: .trailing).combined(with: .opacity)
+                                          : AnyTransition.opacity
+                                  )
+                          }
                       } else if vm.notchState == .closed && capsLockManager.isCapsLockActive && Defaults[.enableCapsLockIndicator] && !vm.hideOnClosed && !lockScreenManager.isLocked {
-                          InlineHUD(type: .constant(.capsLock), value: .constant(1.0), icon: .constant(""), hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
-                              .transition(AnyTransition.move(edge: .trailing).combined(with: .opacity))
+                          if showCapsLockLabel {
+                              InlineHUD(type: .constant(.capsLock), value: .constant(1.0), icon: .constant(""), hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
+                                  .transition(AnyTransition.move(edge: .trailing).combined(with: .opacity))
+                          } else {
+                              capsLockWingActivity
+                          }
                       } else if canShowMusicDuringExpansion && musicPairingEligible {
                           MusicLiveActivity(secondary: musicSecondary)
                               .id("closed-music-live-activity")

@@ -61,7 +61,19 @@ final class ClaudeLimitService: ObservableObject {
     @Published private(set) var lastGood: ClaudeLimitUsage?
     @Published private(set) var nextAt: Date = Date()
     @Published private(set) var isRunning = false
-    @Published var activityOffset: CGFloat?
+    @Published private(set) var activityOffset: CGFloat?
+    private var activityOffsetOwner: UUID?
+
+    func setActivityOffset(_ value: CGFloat?, owner: UUID) {
+        activityOffsetOwner = owner
+        activityOffset = value
+    }
+
+    func clearActivityOffset(owner: UUID) {
+        guard activityOffsetOwner == owner else { return }
+        activityOffsetOwner = nil
+        activityOffset = nil
+    }
     var ringScreenRange: ClosedRange<CGFloat>?
 
     private var interval: Double = intervalStart

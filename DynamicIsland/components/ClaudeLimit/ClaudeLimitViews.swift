@@ -29,11 +29,24 @@ extension ClaudeLimitService {
 }
 
 struct ClaudeLimitLiveActivity: View {
+    @ObservedObject private var service = ClaudeLimitService.shared
+    @Default(.claudeLimitMetric) private var metric
+    @Default(.claudeLimitShowRing) private var showRing
+
+    var body: some View {
+        NotchSingleWingActivity(reportsRingRange: true) { size in
+            ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+        }
+    }
+}
+
+struct NotchSingleWingActivity<Content: View>: View {
     @EnvironmentObject var vm: DynamicIslandViewModel
     @ObservedObject private var service = ClaudeLimitService.shared
     @ObservedObject private var menuBarLayout = MenuBarLayout.shared
-    @Default(.claudeLimitMetric) private var metric
-    @Default(.claudeLimitShowRing) private var showRing
+    var reportsRingRange = false
+    @ViewBuilder let content: (CGFloat) -> Content
+    @State private var ownerID = UUID()
 
     private enum Placement { case left, right, hidden }
 
@@ -66,11 +79,11 @@ struct ClaudeLimitLiveActivity: View {
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
                 .animation(.smooth(duration: 0.25), value: placement)
                 .onAppear {
-                    service.activityOffset = offset
-                    service.ringScreenRange = range
+                    service.setActivityOffset(offset, owner: ownerID)
+                    if reportsRingRange { service.ringScreenRange = range }
                 }
-                .onChange(of: offset) { _, value in service.activityOffset = value }
-                .onChange(of: placement) { _, _ in service.ringScreenRange = range }
+                .onChange(of: offset) { _, value in service.setActivityOffset(value, owner: ownerID) }
+                .onChange(of: placement) { _, _ in if reportsRingRange { service.ringScreenRange = range } }
             } else {
                 let wing = max(16, vm.effectiveClosedNotchHeight - 12)
                 HStack(spacing: 0) {
@@ -83,8 +96,8 @@ struct ClaudeLimitLiveActivity: View {
                 }
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
                 .onAppear {
-                    service.activityOffset = nil
-                    if let screen = currentScreen {
+                    service.setActivityOffset(nil, owner: ownerID)
+                    if reportsRingRange, let screen = currentScreen {
                         let edge = screen.frame.midX - vm.closedNotchSize.width / 2
                         service.ringScreenRange = (edge - wing - cornerRadiusInsets.closed.bottom)...edge
                     }
@@ -94,8 +107,8 @@ struct ClaudeLimitLiveActivity: View {
         .onDisappear {
             var transaction = Transaction()
             transaction.disablesAnimations = true
-            withTransaction(transaction) { service.activityOffset = nil }
-            service.ringScreenRange = nil
+            withTransaction(transaction) { service.clearActivityOffset(owner: ownerID) }
+            if reportsRingRange { service.ringScreenRange = nil }
         }
     }
 
@@ -112,7 +125,7 @@ struct ClaudeLimitLiveActivity: View {
     }
 
     private func ringView(size: CGFloat) -> some View {
-        ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
+        content(size)
             .transition(.opacity)
     }
 
