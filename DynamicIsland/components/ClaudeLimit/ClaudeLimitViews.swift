@@ -43,21 +43,22 @@ struct ClaudeLimitLiveActivity: View {
             let shapePadding = cornerRadiusInsets.closed.bottom
             let physical = physicalNotchWidth
             if let physical {
-                let ringSide = shapePadding + 4 + ringSize + 4
-                let placement = resolvePlacement(extension: 4 + ringSize + 4 + shapePadding, physicalWidth: physical)
+                let wing = max(16, vm.effectiveClosedNotchHeight - 12)
+                let ringSide = shapePadding + 2 + wing
+                let placement = resolvePlacement(extension: 2 + wing + shapePadding, physicalWidth: physical)
                 let offset: CGFloat = placement == .left ? -ringSide / 2 : placement == .right ? ringSide / 2 : 0
                 HStack(spacing: 0) {
                     if placement == .left {
-                        ringView(size: ringSize)
-                            .padding(.trailing, shapePadding + 4)
+                        ringView(size: wing)
+                            .padding(.trailing, shapePadding + 2)
                             .frame(width: ringSide, alignment: .trailing)
                     }
                     Rectangle()
                         .fill(Color.black)
                         .frame(width: max(physical - 2 * shapePadding, 20))
                     if placement == .right {
-                        ringView(size: ringSize)
-                            .padding(.leading, shapePadding + 4)
+                        ringView(size: wing)
+                            .padding(.leading, shapePadding + 2)
                             .frame(width: ringSide, alignment: .leading)
                     }
                 }
