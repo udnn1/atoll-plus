@@ -80,7 +80,11 @@ struct ClaudeLimitLiveActivity: View {
                 .onAppear { service.activityOffset = nil }
             }
         }
-        .onDisappear { service.activityOffset = nil }
+        .onDisappear {
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) { service.activityOffset = nil }
+        }
     }
 
     private var currentScreen: NSScreen? {

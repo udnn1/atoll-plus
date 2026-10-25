@@ -1210,7 +1210,7 @@ struct ContentView: View {
                           )
                       } else if isClaudeLimitPinned && !coordinator.expandingView.show {
                           ClaudeLimitLiveActivity()
-                              .transition(.opacity.animation(.smooth(duration: 0.25)))
+                              .transition(.identity)
                       } else if !coordinator.expandingView.show && vm.notchState == .closed && !shelfState.isEmpty && !vm.hideOnClosed && !lockScreenManager.isLocked && !enableMinimalisticUI {
                           ShelfInlineLiveActivity()
                               .transition(.opacity.animation(.smooth(duration: 0.25)))
