@@ -60,6 +60,8 @@ struct ContentView: View {
     /// the offset that follows does not change it, so there is no feedback.
     @State private var closedContentWidth: CGFloat = 0
     @State private var lastKnownMenusRightEdge: CGFloat?
+    @State private var menuCutArmed = true
+    @State private var menuCutArmTask: Task<Void, Never>?
     @ObservedObject var capsLockManager = CapsLockManager.shared
     @ObservedObject var extensionLiveActivityManager = ExtensionLiveActivityManager.shared
     @ObservedObject var extensionNotchExperienceManager = ExtensionNotchExperienceManager.shared
@@ -455,8 +457,9 @@ struct ContentView: View {
             && !isClaudeLimitPinned
     }
 
-    private func notchScreenMenuCut(islandWidth: CGFloat) -> CGFloat {
-        guard vm.notchState == .closed,
+    private func windowMenuCut(windowWidth: CGFloat) -> CGFloat {
+        guard menuCutArmed,
+              vm.notchState == .closed,
               !isNonNotchScreen,
               let menusRightEdge = menuBarLayout.appMenusRightEdge ?? lastKnownMenusRightEdge,
               let screen = NSScreen.screens.first(where: { $0.localizedName == currentScreenName }),
@@ -465,8 +468,7 @@ struct ContentView: View {
         let physical = screen.frame.width - left - right
         let physicalLeft = screen.frame.midX - physical / 2
         guard menusRightEdge + MenuBarLayout.clearanceGap > physicalLeft - 60 else { return 0 }
-        let islandLeft = screen.frame.midX - islandWidth / 2 + claudeLimitOffset
-        return min(max(0, physicalLeft - islandLeft), islandWidth)
+        return max(0, (windowWidth - physical) / 2)
     }
 
     private var claudeLimitOffset: CGFloat {
@@ -713,17 +715,6 @@ struct ContentView: View {
             .padding(.horizontal, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.bottom, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.top, pillTopOffset)
-            .mask {
-                GeometryReader { geo in
-                    let cut = notchScreenMenuCut(islandWidth: geo.size.width)
-                    if cut > 0 {
-                        UnevenRoundedRectangle(bottomLeadingRadius: cornerRadiusInsets.closed.bottom, bottomTrailingRadius: cornerRadiusInsets.closed.bottom, style: .continuous)
-                            .padding(.leading, cut)
-                    } else {
-                        Rectangle().padding(-60)
-                    }
-                }
-            }
             .offset(x: claudeLimitOffset + (isConnectivityHUDVisible ? 0 : menuBarClearanceOffset))
             .animation(.smooth(duration: 0.25), value: claudeLimitOffset + menuBarClearanceOffset)
             .accessibilityIdentifier("AtollNotch")
@@ -908,6 +899,34 @@ struct ContentView: View {
         )
         .animation(nil, value: vm.notchState)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .mask {
+            GeometryReader { geo in
+                let cut = windowMenuCut(windowWidth: geo.size.width)
+                if cut > 0 {
+                    let islandHeight = notchTopScreenBleedAmount + vm.effectiveClosedNotchHeight
+                    VStack(spacing: 0) {
+                        UnevenRoundedRectangle(bottomLeadingRadius: 10, style: .continuous)
+                            .frame(height: islandHeight)
+                        Rectangle()
+                    }
+                    .padding(.leading, cut)
+                } else {
+                    Rectangle()
+                }
+            }
+        }
+        .onChange(of: vm.notchState) { _, state in
+            menuCutArmTask?.cancel()
+            if state == .open {
+                menuCutArmed = false
+            } else {
+                menuCutArmTask = Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(500))
+                    guard !Task.isCancelled, vm.notchState == .closed else { return }
+                    menuCutArmed = true
+                }
+            }
+        }
         .environmentObject(privacyManager)
         .background(dragDetector)
         .environmentObject(vm)
