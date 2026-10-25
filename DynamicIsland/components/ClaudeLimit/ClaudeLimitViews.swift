@@ -47,6 +47,7 @@ struct ClaudeLimitLiveActivity: View {
                 let ringSide = shapePadding + 2 + wing
                 let placement = resolvePlacement(extension: 2 + wing + shapePadding, physicalWidth: physical)
                 let offset: CGFloat = placement == .left ? -ringSide / 2 : placement == .right ? ringSide / 2 : 0
+                let range = ringRange(placement: placement, physicalWidth: physical, extent: 2 + wing + shapePadding)
                 HStack(spacing: 0) {
                     if placement == .left {
                         ringView(size: wing)
@@ -64,8 +65,12 @@ struct ClaudeLimitLiveActivity: View {
                 }
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
                 .animation(.smooth(duration: 0.25), value: placement)
-                .onAppear { service.activityOffset = offset }
+                .onAppear {
+                    service.activityOffset = offset
+                    service.ringScreenRange = range
+                }
                 .onChange(of: offset) { _, value in service.activityOffset = value }
+                .onChange(of: placement) { _, _ in service.ringScreenRange = range }
             } else {
                 let wing = max(16, vm.effectiveClosedNotchHeight - 12)
                 HStack(spacing: 0) {
@@ -77,13 +82,20 @@ struct ClaudeLimitLiveActivity: View {
                     Color.clear.frame(width: wing)
                 }
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
-                .onAppear { service.activityOffset = nil }
+                .onAppear {
+                    service.activityOffset = nil
+                    if let screen = currentScreen {
+                        let edge = screen.frame.midX - vm.closedNotchSize.width / 2
+                        service.ringScreenRange = (edge - wing - cornerRadiusInsets.closed.bottom)...edge
+                    }
+                }
             }
         }
         .onDisappear {
             var transaction = Transaction()
             transaction.disablesAnimations = true
             withTransaction(transaction) { service.activityOffset = nil }
+            service.ringScreenRange = nil
         }
     }
 
@@ -101,13 +113,18 @@ struct ClaudeLimitLiveActivity: View {
 
     private func ringView(size: CGFloat) -> some View {
         ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
-            .contentShape(Rectangle())
-            .onHover { hovering in
-                guard hovering else { return }
-                DynamicIslandViewCoordinator.shared.currentView = .llmUsage
-                if vm.notchState == .closed { vm.open() }
-            }
             .transition(.opacity)
+    }
+
+    private func ringRange(placement: Placement, physicalWidth: CGFloat, extent: CGFloat) -> ClosedRange<CGFloat>? {
+        guard let screen = currentScreen else { return nil }
+        let left = screen.frame.midX - physicalWidth / 2
+        let right = screen.frame.midX + physicalWidth / 2
+        switch placement {
+        case .left: return (left - extent)...left
+        case .right: return right...(right + extent)
+        case .hidden: return nil
+        }
     }
 
     private func resolvePlacement(extension wing: CGFloat, physicalWidth: CGFloat) -> Placement {

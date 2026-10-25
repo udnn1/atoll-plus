@@ -716,9 +716,12 @@ struct ContentView: View {
             .mask {
                 GeometryReader { geo in
                     let cut = notchScreenMenuCut(islandWidth: geo.size.width)
-                    let radius: CGFloat = vm.notchState == .closed && !isNonNotchScreen ? cornerRadiusInsets.closed.bottom : 0
-                    UnevenRoundedRectangle(bottomLeadingRadius: radius, bottomTrailingRadius: radius, style: .continuous)
-                        .padding(.leading, cut)
+                    if cut > 0 {
+                        UnevenRoundedRectangle(bottomLeadingRadius: cornerRadiusInsets.closed.bottom, bottomTrailingRadius: cornerRadiusInsets.closed.bottom, style: .continuous)
+                            .padding(.leading, cut)
+                    } else {
+                        Rectangle().padding(-60)
+                    }
                 }
             }
             .offset(x: claudeLimitOffset + (isConnectivityHUDVisible ? 0 : menuBarClearanceOffset))
@@ -2404,6 +2407,11 @@ struct ContentView: View {
                         withAnimation(.smooth) {
                             self.coordinator.currentView = .timer
                         }
+                    }
+                    if self.isClaudeLimitPinned,
+                       let ring = self.claudeLimitService.ringScreenRange,
+                       ring.contains(NSEvent.mouseLocation.x) {
+                        self.coordinator.currentView = .llmUsage
                     }
                     self.openNotch()
                 }
