@@ -30,6 +30,10 @@ struct ExtensionStandaloneLayout {
 }
 
 struct ExtensionLiveActivityStandaloneView: View {
+    @EnvironmentObject var vm: DynamicIslandViewModel
+    @Environment(\.claudeRingSide) private var claudeRingSide
+    private var claudeRingExtra: CGFloat { ClaudeRingExtraWidthReader.extra(side: claudeRingSide, closedHeight: vm.effectiveClosedNotchHeight) }
+
     let payload: ExtensionLiveActivityPayload
     let layout: ExtensionStandaloneLayout
     let isHovering: Bool
@@ -65,7 +69,7 @@ struct ExtensionLiveActivityStandaloneView: View {
             )
                 .frame(width: layout.trailingWidth, height: contentHeight)
         }
-        .frame(width: layout.totalWidth, height: layout.outerHeight + (isHovering ? 8 : 0))
+        .frame(width: layout.totalWidth + claudeRingExtra, height: layout.outerHeight + (isHovering ? 8 : 0))
         .transition(
             .asymmetric(
                 insertion: .scale(scale: 0.95).combined(with: .opacity).animation(.spring(response: 0.4, dampingFraction: 0.8)),

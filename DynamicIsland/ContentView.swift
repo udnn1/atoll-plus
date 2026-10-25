@@ -1537,7 +1537,7 @@ struct ContentView: View {
             notchHeight: notchContentHeight
         )
         let effectiveCenterWidth = inlineSneakPeekActive ? 380 : centerBaseWidth
-        let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
+        let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth + (claudeCompanionActive ? ClaudeRingSlot.width(closedHeight: vm.effectiveClosedNotchHeight) : 0)
         let badgeBaseSize = max(13, artworkSize * 0.36)
         let badgeDisplaySize = badgeDisplaySize(for: secondary, baseSize: badgeBaseSize)
         let badgeOffset = badgeOverlayOffset(for: secondary, badgeSize: badgeDisplaySize)

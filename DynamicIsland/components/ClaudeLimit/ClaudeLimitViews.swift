@@ -415,7 +415,9 @@ private struct ClaudeRingSlotModifier: ViewModifier {
         let size = ClaudeRingSlot.ringSize(closedHeight: vm.effectiveClosedNotchHeight)
         return Color.clear
             .frame(width: ClaudeRingSlot.width(closedHeight: vm.effectiveClosedNotchHeight))
-            .overlay(Color.clear.frame(width: size, height: size).claudeRingAnchor())
+            .overlay(alignment: side == .leading ? .trailing : .leading) {
+                Color.clear.frame(width: size, height: size).claudeRingAnchor()
+            }
     }
 }
 
