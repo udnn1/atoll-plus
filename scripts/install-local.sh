@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 
-REPO="udnn1/atoll-private"
+REPO="udnn1/atoll-plus"
 IDENTITY="Atoll Local Signing"
 KEYCHAIN="$HOME/Library/Keychains/atoll-signing.keychain-db"
 PASS_FILE="$HOME/.config/atoll-signing/keychain-pass"

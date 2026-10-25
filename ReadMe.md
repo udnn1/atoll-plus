@@ -1,73 +1,137 @@
-<h1 align="center">Atoll (wersja udnn1)</h1>
+<h1 align="center">Atoll Plus</h1>
 
-<p align="center">Prywatna wersja <a href="https://github.com/Ebullioscopic/Atoll">Atolla</a>, czyli „Dynamic Island” dla macOS, dopasowana do mojego MacBooka Air M4 i zewnętrznego monitora bez notcha.</p>
+<p align="center">
+  Rozszerzona wersja <a href="https://github.com/Ebullioscopic/Atoll">Atolla</a> — „Dynamic Island” dla macOS — z wbudowanym licznikiem limitu Claude, gestami gładzika ze Slidr-Free, mapowaniem klawiszy i polskim interfejsem.
+</p>
 
-## Co zmieniliśmy względem oryginału
+<p align="center">
+  <img alt="macOS" src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
+  <img alt="Swift" src="https://img.shields.io/badge/Swift-SwiftUI-orange?logo=swift">
+  <img alt="Licencja" src="https://img.shields.io/badge/licencja-GPL--3.0-blue">
+  <img alt="Język" src="https://img.shields.io/badge/interfejs-polski-red">
+</p>
 
-### Licznik limitu Claude (zamiast claude-tray)
-- Logika przeniesiona 1:1 z mojego `claude-tray`: token z aplikacji Claude Desktop (`~/Library/Application Support/Claude/config.json`, odszyfrowany kluczem „Claude Safe Storage” z Pęku kluczy), automatyczne odświeżanie tokenu, adaptacyjne tempo odpytywania (60–900 s, wolniej przy bezczynności, cofanie się przy limicie API), dane starsze niż 20 minut traktowane jak brak danych („?”).
-- Stan i zaszyfrowany token w tych samych plikach co claude-tray: `~/Library/Application Support/ClaudeLimitTray/`.
-- Wygląd jak ikona claude-tray: pierścień postępu z liczbą, kolory zielony (< 50%), bursztynowy (50–74%), pomarańczowy (75–89%), czerwony (≥ 90%).
-- Zamknięta wyspa jest stale wysunięta z pierścieniem. Na ekranie z notchem pierścień stoi obok fizycznego notcha, przeskakuje na prawą stronę, gdy menu aplikacji dochodzą do notcha, i chowa się, gdy po obu stronach brakuje miejsca. Notch wyspy zawsze trafia w fizyczny notch.
-- Wskaźnik Caps Lock (bez napisu) używa tego samego jednostronnego skrzydła co pierścień: ikona po lewej (albo po prawej, gdy menu dochodzą do notcha), wyspa wystaje tylko z tej strony i o tyle samo co pierścień.
-- Najechanie na pierścień otwiera notch na karcie **Usage** ze szczegółami jak w menu claude-tray: limit 5h i 7d, reset, ostatni i następny odczyt, „Odśwież teraz”, wybór liczby (5h/7d) i pierścienia.
-- Włączanie i wyłączanie: **Ustawienia → Stats → Licznik limitu Claude** albo przełącznik **Limit Claude** w menu Atolla na pasku menu.
-- Gdy pojawia się inna stała aktywność (muzyka, Caps Lock, timer, przypomnienie, nagrywanie, pobieranie, LocalSend, skupienie, wskaźniki kamery/mikrofonu, aktywności rozszerzeń), pierścień zostaje zawsze tuż przy notchu, a wszystko, co dochodzi, pojawia się dalej, na zewnątrz. Każda z tych aktywności zostawia przy środkowym segmencie notcha miejsce na pierścień (`claudeRingSlot()`), a sam pierścień jest jednym stałym elementem nad wyspą (`claudeRingOverlay`), który płynnie przesuwa się do zgłoszonego miejsca — dlatego nie miga przy zmianie aktywności. Pierścień stoi po lewej, a po prawej, gdy menu aplikacji dochodzą do notcha. Krótkie komunikaty (ładowarka, bateria, podgląd utworu, HUD-y) na chwilę zastępują zawartość wyspy jak dotąd, a pierścień w tym czasie się chowa. Po wyłączeniu licznika Claude aktywności wyglądają jak w oryginalnym Atollu.
+---
 
-### Gesty gładzika (wbudowany Slidr-Free)
-Kod [Slidr-Free](https://github.com/YuriGao/slidr-free) (MIT, licencja w `DynamicIsland/TrackpadGestures/LICENSE-slidr-free.txt`) działa wewnątrz Atolla, nie jako osobna aplikacja ani wpis w autostarcie. Startuje i kończy się razem z Atollem. Konfiguracja jest w **Ustawienia → Gładzik** i zawiera te same opcje co Slidr-Free: Overview, Edge Gestures, Corner Shortcuts, Middle Click i Diagnostics.
+Atoll Plus zastępuje w jednej aplikacji kilka osobnych narzędzi: **claude-tray** (limit Claude na pasku menu), **Slidr-Free** (gesty na krawędziach gładzika), **Karabiner-Elements / keymapd** (zamiana klawiszy) i **MediaMate** (pionowy pasek głośności). Wszystko startuje razem z Atollem, bez dodatkowych wpisów w autostarcie.
 
-Działa tylko na fizycznym gładziku (MacBook z otwartą klapą albo Magic Trackpad). Dotyk czyta prywatny framework Apple MultitouchSupport.
+## Spis treści
+- [Co dodaje Atoll Plus](#co-dodaje-atoll-plus)
+- [Licznik limitu Claude](#licznik-limitu-claude)
+- [Gesty gładzika](#gesty-gładzika)
+- [Mapowanie klawiszy](#mapowanie-klawiszy)
+- [Poprawki względem oryginału](#poprawki-względem-oryginału)
+- [Polski interfejs](#polski-interfejs)
+- [Budowanie i instalacja](#budowanie-i-instalacja)
+- [Uprawnienia i prywatność](#uprawnienia-i-prywatność)
+- [Struktura zmian w kodzie](#struktura-zmian-w-kodzie)
+- [Aktualizacje z oryginału](#aktualizacje-z-oryginału)
+- [Licencja i podziękowania](#licencja-i-podziękowania)
 
-- **Krawędzie:** przesunięcie jednym palcem w górę lub w dół przy lewej albo prawej krawędzi zmienia przypisaną wartość: jasność, głośność albo nic. Gest wysyła systemowy klawisz głośności lub jasności, więc wartość zmienia się o krok Atolla i pokazuje się HUD Atolla (Vertical Bar). Górna krawędź przy przesunięciu w prawo lub w lewo przełącza kartę w Safari, Chrome i Edge. Opcja „Cycle between first and last tabs” zawija z ostatniej karty na pierwszą.
-- **Haptyka:** każdy krok głośności, jasności i karty daje tyknięcie silniczkiem gładzika (`MTActuator`, działa też w tle), a otwarcie aplikacji z rogu tyknięcie o 2 poziomy mocniejsze. Siłę (1–6, domyślnie 2) ustawia suwak „Siła haptyki” w Gładzik → Przegląd, z przyciskiem „Wypróbuj”.
-- **Rogi:** podwójne stuknięcie w róg gładzika otwiera przypisaną aplikację. Jeśli jest już na pierwszym planie, jej okno się minimalizuje albo przywraca.
-- **Środkowe kliknięcie:** stuknięcie albo dociśnięcie dokładnie N palcami (3 lub 4).
-- **Parametry:** szerokość strefy krawędzi, odległość ruchu na jeden krok osobno dla każdej krawędzi, strefa i czas podwójnego stuknięcia w rogu, bezpieczny 15-sekundowy test gestów bez wykonywania akcji.
-- **Moja konfiguracja** przeniosła się automatycznie z `com.slidr.free` przy pierwszym uruchomieniu: lewa krawędź = jasność, prawa = głośność, górna wyłączona, środkowe kliknięcie wyłączone.
+## Co dodaje Atoll Plus
 
-### Mapowanie klawiszy (zamiast Karabiner-Elements i keymapd)
-- `managers/KeyboardRemapper.swift` przy starcie Atolla ustawia przez `/usr/bin/hidutil`: lewy Cmd ↔ lewy Ctrl, prawy Cmd ↔ prawy Option oraz `CapsLockDelayOverride = 0` (Caps Lock bez opóźnienia).
-- Mapowanie jest ponawiane po podłączeniu każdej klawiatury (powiadomienie IOKit o nowym `IOHIDEventService`, np. ponowne połączenie MX Keys przez Bluetooth), po wybudzeniu i po powrocie do sesji.
-- Konfiguracja: **Ustawienia → Klawiatura**. Lista zamian „klawisz → klawisz” z wyborem z listy (lewy/prawy Control, Shift, Option, Command, Caps Lock, Escape, Tab, Return, Delete, ` , § i Fn), dodawanie i usuwanie zamian, „Przywróć domyślne” oraz przełączniki „Mapowanie klawiszy” i „Caps Lock bez opóźnienia”. Zmiany działają od razu. Zamiany są zapisane w ustawieniach Atolla (`keyboardRemapPairs`).
-- Działa bez przechwytywania klawiatury, więc nie hamuje systemu jak Karabiner.
+| Funkcja | Gdzie w Ustawieniach | Zastępuje |
+|---|---|---|
+| Pierścień z limitem Claude w zamkniętej wyspie + karta **Limity** | Statystyki → Licznik limitu Claude, menu na pasku → Limit Claude | claude-tray |
+| Gesty na krawędziach, rogach i środkowe kliknięcie na gładziku, z haptyką | **Gładzik** | Slidr-Free |
+| Zamiana klawiszy i Caps Lock bez opóźnienia | **Klawiatura** | Karabiner-Elements, keymapd |
+| Pionowy pasek głośności i jasności przy prawej krawędzi | Sterowanie → Pionowy pasek (wbudowane w Atolla) | MediaMate |
+| Polski interfejs | — (język systemu) | — |
 
-### Poprawki błędów
-- Na monitorze bez notcha schowana wyspa wysuwa się przy animacji ładowania, włączaniu muzyki i innych animacjach (wcześniej animacja grała poza ekranem).
-- Rozmycie zawartości notcha znika po przewijaniu kółkiem myszy. Wcześniej myszy bez fazy końca gestu (np. Logitech) zostawiały rozmycie na stałe.
-- Ikona baterii ma margines wewnętrzny, więc „100” z wtyczką nie dotyka krawędzi.
-- Przełącznik **Limit Claude** w menu na pasku menu.
-- Regulator głośności i jasności nie wyskakuje przy starcie Atolla.
-- Odsuwanie wyspy od menu aplikacji przesuwa cały kształt wyspy (wcześniej przesuwała się tylko zawartość i animacje były ucinane). Na ekranie z notchem wyspa zostaje na środku, a gdy menu dochodzą do notcha, jej lewe skrzydło się chowa, żeby nie zasłaniać menu.
+## Licznik limitu Claude
 
-### Polski interfejs
-- `DynamicIsland/Localizable.xcstrings` (katalog, który faktycznie trafia do aplikacji) zsynchronizowany z kodem przez `xcstringstool sync`, wszystkie tłumaczalne teksty mają wersję polską (wcześniej polski miało tylko 174 z 1601). Dodatkowo 116 tekstów, które Ustawienia przekazywały jako zwykłe napisy (komunikaty o uprawnieniach, statusy BetterDisplay/Lunar, wyniki wyszukiwania, aktualizacje), dopisano ręcznie, a widoki w `components/Settings` wyświetlają je przez `LocalizedStringKey`, więc też są tłumaczone.
-- Panel **Gładzik** ma własny słownik `DynamicIsland/TrackpadGestures/SlidrStrings.swift` (191 tekstów), przetłumaczony na polski.
-- Teksty pokazują się po polsku, gdy macOS ma polski jako język główny. Przy dodawaniu nowych tekstów: zbuduj z `SWIFT_EMIT_LOC_STRINGS=YES`, uruchom `xcrun xcstringstool sync DynamicIsland/Localizable.xcstrings --stringsdata …` i dopisz tłumaczenia `pl`.
+**Skąd dane.** Logika przeniesiona 1:1 z `claude-tray`:
+- token OAuth z aplikacji Claude Desktop (`~/Library/Application Support/Claude/config.json`), odszyfrowany kluczem „Claude Safe Storage” z Pęku kluczy (przez `/usr/bin/security`),
+- zapytanie do `https://api.anthropic.com/api/oauth/usage`, przy wygasłym tokenie odświeżenie przez `refresh_token`,
+- adaptacyjne tempo: start co 120 s, przedział 60–900 s, rzadziej po 5 min bezczynności, wolniej przy odpowiedzi 429 (limit API),
+- dane starsze niż 20 min są traktowane jak brak danych i pierścień pokazuje „?”,
+- stan i zaszyfrowany token w `~/Library/Application Support/ClaudeLimitTray/` (te same pliki co claude-tray).
 
-### Ustawienia, których używam
-- HUD głośności i jasności: **Vertical Bar** po prawej (styl jak w MediaMate).
-- Monitor zewnętrzny: styl Dynamic Island, chowanie do najechania, wysokość jak pasek menu, ukrywanie w pełnym ekranie.
-- Keep Awake wyłączone.
+**Wygląd.** Pierścień postępu z liczbą (SF Pro, wąska), kolor wg zużycia: zielony < 50%, bursztynowy 50–74%, pomarańczowy 75–89%, czerwony ≥ 90%. Liczba to limit 5h albo 7d (do wyboru), pierścień można wyłączyć (sama liczba).
 
-## Budowanie i instalacja (lokalnie)
+**Zachowanie w wyspie.**
+- Zamknięta wyspa jest stale wysunięta z pierścieniem, także na monitorze, na którym wyspa normalnie chowa się do najechania.
+- Na ekranie z notchem pierścień stoi zawsze **2 pt od fizycznego notcha**. Jest po lewej, a przechodzi na prawą stronę, gdy menu aplikacji dochodzą do notcha; chowa się, gdy po obu stronach brakuje miejsca (sprawdzane menu aplikacji i ikony statusu).
+- Gdy pojawia się inna stała aktywność — muzyka, Caps Lock, timer, przypomnienie, nagrywanie ekranu, pobieranie, LocalSend, skupienie, wskaźniki kamery/mikrofonu, aktywności rozszerzeń — pierścień **zostaje przy notchu**, a nowa rzecz pojawia się dalej na zewnątrz. Pierścień jest jednym stałym elementem nad wyspą, więc nie miga ani nie przesuwa się przy przejściach.
+- Krótkie komunikaty (ładowarka, bateria, podgląd utworu, słuchawki Bluetooth, HUD-y) na chwilę zastępują zawartość wyspy; pierścień w tym czasie się chowa i wraca.
+- Półka i animacja bezczynności mają niższy priorytet niż pierścień.
 
-Wymagania: macOS 14+, Xcode (u mnie 27.1) z pobranym Metal Toolchain (`xcodebuild -downloadComponent MetalToolchain`).
+**Karta Limity.** Najechanie na pierścień otwiera notch na karcie **Limity** ze szczegółami jak w menu claude-tray: limit 5h i 7d, godzina resetu 5h („dziś o 17:20”), ostatni i następny odczyt, przycisk **Odśwież teraz**, wybór liczby (5h/7d) i przełącznik pierścienia.
+
+## Gesty gładzika
+
+Kod [Slidr-Free](https://github.com/YuriGao/slidr-free) (MIT) działa wewnątrz Atolla — to nie jest osobna aplikacja. Dotyk czytany jest z prywatnego frameworka Apple MultitouchSupport, więc gesty działają **tylko na fizycznym gładziku** (MacBook z otwartą klapą albo Magic Trackpad). Konfiguracja: **Ustawienia → Gładzik** (Przegląd, Krawędzie, Rogi, Środkowe kliknięcie, Diagnostyka).
+
+| Gest | Działanie |
+|---|---|
+| Jeden palec w górę/dół przy lewej krawędzi | jasność (wysyła systemowy klawisz jasności → HUD Atolla) |
+| Jeden palec w górę/dół przy prawej krawędzi | głośność (wysyła systemowy klawisz głośności → HUD Atolla) |
+| Jeden palec w lewo/prawo przy górnej krawędzi | poprzednia/następna karta w Safari, Chrome i Edge, opcjonalnie z zawijaniem |
+| Podwójne stuknięcie w róg | otwiera przypisaną aplikację; gdy jest na pierwszym planie, minimalizuje/przywraca jej okno |
+| Stuknięcie lub dociśnięcie N palcami (3 lub 4) | środkowe kliknięcie |
+
+- **Haptyka:** każdy krok głośności, jasności i karty to tyknięcie silniczka gładzika przez `MTActuator` (działa też, gdy Atoll jest w tle). Suwak **Siła haptyki** 1–6 (domyślnie 2) z przyciskiem **Wypróbuj**; otwarcie aplikacji z rogu tyka o 2 poziomy mocniej.
+- **Parametry:** szerokość strefy krawędzi, odległość ruchu na jeden krok (osobno dla każdej krawędzi), wielkość strefy rogu, limit ruchu i odstęp podwójnego stuknięcia, 15-sekundowy bezpieczny test gestów bez wykonywania akcji.
+- Konfiguracja ze Slidr-Free (`com.slidr.free`) została przeniesiona automatycznie przy pierwszym uruchomieniu.
+
+## Mapowanie klawiszy
+
+`KeyboardRemapper` ustawia zamiany przez systemowe `/usr/bin/hidutil` — bez przechwytywania klawiatury, więc nie spowalnia systemu jak Karabiner-Elements.
+
+- **Ustawienia → Klawiatura**: lista zamian „klawisz → klawisz” (lewy/prawy Control, Shift, Option, Command, Caps Lock, Escape, Tab, Return, Delete, `, §, Fn), dodawanie, usuwanie, **Przywróć domyślne**.
+- Domyślnie: lewy Command ↔ lewy Control, prawy Command ↔ prawy Option.
+- **Caps Lock bez opóźnienia** (`CapsLockDelayOverride = 0`); po wyłączeniu systemowe opóźnienie wraca po ponownym zalogowaniu.
+- Mapowanie jest ponawiane po podłączeniu klawiatury (np. ponowne połączenie przez Bluetooth), po wybudzeniu Maca i po powrocie do sesji. Zmiany działają od razu.
+
+## Poprawki względem oryginału
+
+- **Wysuwanie ukrytej wyspy** na monitorach bez notcha przy animacji ładowania, muzyce i innych animacjach (wcześniej animacja grała poza ekranem).
+- **Rozmycie zawartości notcha** znika po przewijaniu kółkiem myszy — myszy bez fazy końca gestu (np. Logitech) zostawiały je na stałe.
+- **Odsuwanie wyspy od menu aplikacji** przesuwa cały kształt wyspy (wcześniej tylko zawartość, przez co animacje były ucinane). Na ekranie z notchem wyspa zostaje na środku, a gdy menu dochodzą do notcha, jej lewe skrzydło jest ucinane na krawędzi fizycznego notcha (z zaokrąglonym rogiem), żeby nie zasłaniać menu.
+- **Pomiar menu aplikacji** nie gubi i nie zaniża ostatniego wyniku dla tej samej aplikacji (Firefox bywał mierzony częściowo).
+- **Ikona baterii** ma margines wewnętrzny — „100” z wtyczką nie dotyka krawędzi.
+- **Brak regulatora głośności/jasności** wyskakującego przy starcie Atolla.
+- **Restart Atolla nie zabiera fokusu** (przycisk „Uruchom ponownie Atolla” startuje go w tle).
+- **Zakładka Gładzik** z tym samym tłem i układem co reszta Ustawień; przełącznik **Limit Claude** w menu na pasku menu.
+
+## Polski interfejs
+
+- `DynamicIsland/Localizable.xcstrings` (katalog, który trafia do aplikacji) zsynchronizowany z kodem i przetłumaczony — wcześniej polski miało tylko 174 z ok. 1600 tekstów.
+- Teksty, które Ustawienia przekazywały jako zwykłe napisy (komunikaty o uprawnieniach, statusy BetterDisplay/Lunar, wyniki wyszukiwania, okna aktualizacji, nazwy trybów), wyświetlane są przez `LocalizedStringKey` i mają tłumaczenia dopisane ręcznie.
+- Panel Gładzik ma własny słownik `DynamicIsland/TrackpadGestures/SlidrStrings.swift`.
+- Nowe teksty: zbuduj z `SWIFT_EMIT_LOC_STRINGS=YES`, uruchom `xcrun xcstringstool sync DynamicIsland/Localizable.xcstrings --stringsdata …` i dopisz wartości `pl`.
+
+## Budowanie i instalacja
+
+Wymagania: macOS 14+, Xcode z pobranym Metal Toolchain (`xcodebuild -downloadComponent MetalToolchain`).
 
 ```bash
 ./scripts/build-local.sh
 ```
 
-Skrypt buduje w trybie przyrostowym (`SWIFT_COMPILATION_MODE=singlefile`, ok. 12–20 s po zmianie zamiast ~100 s przy kompilacji całego modułu), pilnuje, żeby Mac nie zasnął w trakcie (`caffeinate`), i od razu instaluje wynik. Opcja `--no-install` tylko buduje. Dane builda: `~/Library/Developer/Xcode/DerivedData/Atoll-local`.
+- Build przyrostowy (`SWIFT_COMPILATION_MODE=singlefile`): ok. 12–20 s po zmianie zamiast ok. 100 s przy kompilacji całego modułu. `caffeinate` pilnuje, żeby Mac nie zasnął w trakcie. Dane builda: `~/Library/Developer/Xcode/DerivedData/Atoll-local`. Opcja `--no-install` tylko buduje.
+- `scripts/install-local.sh` podpisuje aplikację lokalnym certyfikatem „Atoll Local Signing” (osobny pęk kluczy `~/Library/Keychains/atoll-signing.keychain-db`), podmienia `/Applications/Atoll.app`, uruchamia ją w tle i przywraca poprzednią aplikację tylko wtedy, gdy fokus się zmienił. Stały podpis sprawia, że uprawnienie **Dostępność** nadane raz zostaje przy kolejnych wersjach.
+- Workflow `.github/workflows/build-app.yml` buduje aplikację na GitHubie tylko na żądanie: `gh workflow run build-app.yml -R udnn1/atoll-plus --ref main`.
 
-`scripts/install-local.sh` podpisuje aplikację lokalnym certyfikatem „Atoll Local Signing” (osobny pęk kluczy `~/Library/Keychains/atoll-signing.keychain-db`), podmienia `/Applications/Atoll.app` i uruchamia ją ponownie. Stały podpis sprawia, że uprawnienie **Dostępność** nadane raz zostaje przy kolejnych wersjach.
+## Uprawnienia i prywatność
 
-Workflow `.github/workflows/build-app.yml` buduje aplikację na GitHubie, ale tylko na żądanie (`gh workflow run build-app.yml -R udnn1/atoll-private --ref main`), żeby nie zużywać minut na macOS.
+| Uprawnienie | Po co |
+|---|---|
+| Dostępność | przechwytywanie klawiszy głośności i jasności, odczyt menu i ikon statusu (położenie pierścienia), gesty i środkowe kliknięcie |
+| Pęk kluczy (`/usr/bin/security`) | odczyt „Claude Safe Storage” do odszyfrowania tokenu Claude Desktop |
+| Pozostałe (kalendarz, kamera, nagrywanie ekranu, muzyka) | tylko dla funkcji, które ich wymagają |
 
-## Uprawnienia
-- **Dostępność:** przechwytywanie klawiszy głośności i jasności, odczyt menu i ikon statusu (pozycja pierścienia).
-- **Pęk kluczy:** odczyt hasła „Claude Safe Storage” przez `/usr/bin/security` (licznik Claude).
-- Pozostałe (kalendarz, aparat, nagrywanie ekranu, muzyka) tylko dla funkcji, które ich wymagają.
+Token Claude trafia wyłącznie do `api.anthropic.com`. Repozytorium nie zawiera żadnych sekretów — certyfikat podpisu i jego hasło są tylko lokalnie (`~/.config/atoll-signing`).
+
+## Struktura zmian w kodzie
+
+| Ścieżka | Zawartość |
+|---|---|
+| `DynamicIsland/managers/ClaudeLimit/ClaudeLimitService.swift` | pobieranie limitu Claude (token, odświeżanie, tempo, stan) |
+| `DynamicIsland/components/ClaudeLimit/` | pierścień, aktywność w wyspie, karta Limity, miejsce na pierścień w innych aktywnościach |
+| `DynamicIsland/TrackpadGestures/` | kod Slidr-Free, `SlidrTrackpadController`, `TrackpadHaptics`, polski słownik |
+| `DynamicIsland/managers/KeyboardRemapper.swift` | mapowanie klawiszy i zakładka Klawiatura |
+| `scripts/build-local.sh`, `scripts/install-local.sh` | szybki build i instalacja z podpisem |
 
 ## Aktualizacje z oryginału
 
@@ -76,8 +140,10 @@ git fetch upstream
 git merge upstream/dev
 ```
 
-Uwaga: wbudowany aktualizator (Sparkle) wskazuje na wydania oryginalnego Atolla. Instalacja aktualizacji z poziomu aplikacji nadpisze tę wersję oficjalną.
+Wbudowany aktualizator (Sparkle) wskazuje na wydania oryginalnego Atolla — instalacja aktualizacji z poziomu aplikacji nadpisze Atoll Plus wersją oficjalną.
 
 ## Licencja i podziękowania
 
-Atoll jest na licencji GPL v3, szczegóły w pliku [LICENSE](LICENSE). Ta wersja bazuje na [Ebullioscopic/Atoll](https://github.com/Ebullioscopic/Atoll) i projektach, z których korzysta oryginał: [Boring.Notch](https://github.com/TheBoredTeam/boring.notch), [Alcove](https://tryalcove.com), [Stats](https://github.com/exelban/stats), [Open Meteo](https://open-meteo.com), [SkyLightWindow](https://github.com/Lakr233/SkyLightWindow), [rtaudio](https://github.com/ZephyrCodesStuff/rtaudio), [SwiftTerm](https://github.com/migueldeicaza/SwiftTerm), [DynamicNotch](https://github.com/jackson-storm/DynamicNotch), Wick i [OpenUsage](https://github.com/robinebers/openusage).
+GPL-3.0, szczegóły w [LICENSE](LICENSE). Atoll Plus bazuje na [Ebullioscopic/Atoll](https://github.com/Ebullioscopic/Atoll) i projektach, z których korzysta oryginał: [Boring.Notch](https://github.com/TheBoredTeam/boring.notch), [Alcove](https://tryalcove.com), [Stats](https://github.com/exelban/stats), [Open Meteo](https://open-meteo.com), [SkyLightWindow](https://github.com/Lakr233/SkyLightWindow), [rtaudio](https://github.com/ZephyrCodesStuff/rtaudio), [SwiftTerm](https://github.com/migueldeicaza/SwiftTerm), [DynamicNotch](https://github.com/jackson-storm/DynamicNotch), Wick i [OpenUsage](https://github.com/robinebers/openusage).
+
+Gesty gładzika: [YuriGao/slidr-free](https://github.com/YuriGao/slidr-free) (MIT, licencja w `DynamicIsland/TrackpadGestures/LICENSE-slidr-free.txt`). Haptyka przez `MTActuator` wzorowana na [Glissé](https://github.com/helgafinn/glisse) (MIT).
