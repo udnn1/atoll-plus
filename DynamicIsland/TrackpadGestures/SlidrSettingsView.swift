@@ -39,13 +39,10 @@ struct SlidrSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Picker("", selection: $selection) {
-                ForEach(SettingsSection.allCases) { section in
-                    Label(section.title, systemImage: section.icon).tag(Optional(section))
-                }
+            ViewThatFits(in: .horizontal) {
+                sectionPicker(showsTitles: true)
+                sectionPicker(showsTitles: false)
             }
-            .pickerStyle(.segmented)
-            .labelsHidden()
             .padding(.horizontal, 24)
             .padding(.top, 16)
             ScrollView {
@@ -80,6 +77,25 @@ struct SlidrSettingsView: View {
         } message: {
             Text(slidrL("reset_settings_message"))
         }
+    }
+
+    private func sectionPicker(showsTitles: Bool) -> some View {
+        Picker("", selection: $selection) {
+            ForEach(SettingsSection.allCases) { section in
+                Group {
+                    if showsTitles {
+                        Text(section.title)
+                    } else {
+                        Image(systemName: section.icon)
+                    }
+                }
+                .help(section.title)
+                .tag(Optional(section))
+            }
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+        .fixedSize()
     }
 
     private var needsOnboarding: Bool {
@@ -159,7 +175,7 @@ struct SlidrSettingsView: View {
     private var edgeSettings: some View {
         VStack(alignment: .leading, spacing: 18) {
             pageTitle("nav_edges", subtitleKey: "edges_subtitle")
-            HStack(alignment: .top, spacing: 24) {
+            VStack(alignment: .leading, spacing: 18) {
                 TrackpadDiagram(settings: store.settings)
                     .frame(width: 250, height: 190)
                     .accessibilityElement(children: .combine)
@@ -214,7 +230,7 @@ struct SlidrSettingsView: View {
     private var cornerSettings: some View {
         VStack(alignment: .leading, spacing: 18) {
             pageTitle("nav_corners", subtitleKey: "corners_subtitle")
-            HStack(alignment: .top, spacing: 24) {
+            VStack(alignment: .leading, spacing: 18) {
                 CornerTrackpadDiagram(bindings: store.settings.cornerAppBindings)
                     .frame(width: 250, height: 190)
                     .accessibilityElement(children: .combine)

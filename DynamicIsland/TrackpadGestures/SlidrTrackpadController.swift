@@ -124,5 +124,7 @@ struct TrackpadGesturesSettingsPane: View {
             pipelineStatus: controller.pipelineStatus,
             gestureTestController: controller.gestureTestController
         )
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .navigationTitle("Gładzik")
     }
 }
