@@ -67,6 +67,7 @@ struct DynamicNotchApp: App {
 
                     let configuration = NSWorkspace.OpenConfiguration()
                     configuration.createsNewApplicationInstance = true
+                    configuration.activates = false
 
                     workspace.openApplication(at: appURL, configuration: configuration)
                 }

@@ -26,5 +26,10 @@ sleep 2
 rm -rf "$APP_DEST"
 ditto "$SOURCE_APP" "$APP_DEST"
 xattr -dr com.apple.quarantine "$APP_DEST" 2>/dev/null || true
-open "$APP_DEST"
+FRONT_APP="$(lsappinfo info -only bundleid "$(lsappinfo front)" 2>/dev/null | grep -o 'bundleID="[^"]*"' | cut -d'"' -f2 || true)"
+open -g "$APP_DEST"
+if [[ -n "$FRONT_APP" && "$FRONT_APP" != "com.Ebullioscopic.Atoll" ]]; then
+  sleep 2
+  open -b "$FRONT_APP" 2>/dev/null || true
+fi
 echo "Zainstalowano: $(codesign -dv "$APP_DEST" 2>&1 | grep Authority || echo podpisane)"

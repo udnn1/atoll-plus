@@ -716,7 +716,8 @@ struct ContentView: View {
             .mask {
                 GeometryReader { geo in
                     let cut = notchScreenMenuCut(islandWidth: geo.size.width)
-                    UnevenRoundedRectangle(bottomLeadingRadius: cut > 0 ? 10 : 0, style: .continuous)
+                    let radius: CGFloat = vm.notchState == .closed && !isNonNotchScreen ? cornerRadiusInsets.closed.bottom : 0
+                    UnevenRoundedRectangle(bottomLeadingRadius: radius, bottomTrailingRadius: radius, style: .continuous)
                         .padding(.leading, cut)
                 }
             }

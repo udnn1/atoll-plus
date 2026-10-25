@@ -67,15 +67,14 @@ struct ClaudeLimitLiveActivity: View {
                 .onAppear { service.activityOffset = offset }
                 .onChange(of: offset) { _, value in service.activityOffset = value }
             } else {
-                let sideWidth = ringSize + 20
+                let wing = max(16, vm.effectiveClosedNotchHeight - 12)
                 HStack(spacing: 0) {
-                    ringView(size: ringSize)
-                        .padding(.trailing, 4)
-                        .frame(width: sideWidth, alignment: .trailing)
+                    ringView(size: wing)
+                        .frame(width: wing, alignment: .center)
                     Rectangle()
                         .fill(Color.black)
                         .frame(width: vm.closedNotchSize.width)
-                    Color.clear.frame(width: sideWidth)
+                    Color.clear.frame(width: wing)
                 }
                 .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
                 .onAppear { service.activityOffset = nil }
