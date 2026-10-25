@@ -689,11 +689,6 @@ struct ContentView: View {
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
             .background(.black)
             .clipShape(resolvedClipShape)
-            .mask {
-                GeometryReader { geo in
-                    Rectangle().padding(.leading, notchScreenMenuCut(islandWidth: geo.size.width))
-                }
-            }
             // Keep the anti-gap fill outside the clipped notch. The window sits
             // this far above screen.maxY, so placing the spacer after clipShape
             // leaves the notch's top corners anchored to the visible screen edge.
@@ -717,6 +712,13 @@ struct ContentView: View {
             .padding(.horizontal, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.bottom, isIslandMode ? dynamicIslandShadowInset : 0)
             .padding(.top, pillTopOffset)
+            .mask {
+                GeometryReader { geo in
+                    let cut = notchScreenMenuCut(islandWidth: geo.size.width)
+                    UnevenRoundedRectangle(bottomLeadingRadius: cut > 0 ? 10 : 0, style: .continuous)
+                        .padding(.leading, cut)
+                }
+            }
             .offset(x: claudeLimitOffset + (isConnectivityHUDVisible ? 0 : menuBarClearanceOffset))
             .animation(.smooth(duration: 0.25), value: claudeLimitOffset + menuBarClearanceOffset)
             .accessibilityIdentifier("AtollNotch")
