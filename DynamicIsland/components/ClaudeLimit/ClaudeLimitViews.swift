@@ -99,9 +99,9 @@ struct ClaudeLimitLiveActivity: View {
         ClaudeLimitRing(pct: service.displayedPct(metric: metric), showRing: showRing, size: size)
             .contentShape(Rectangle())
             .onHover { hovering in
-                guard hovering, vm.notchState == .closed else { return }
+                guard hovering else { return }
                 DynamicIslandViewCoordinator.shared.currentView = .llmUsage
-                vm.open()
+                if vm.notchState == .closed { vm.open() }
             }
             .transition(.opacity)
     }
