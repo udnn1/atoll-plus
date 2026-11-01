@@ -1145,6 +1145,7 @@ struct GeneralSettings: View {
     @Default(.customizePhysicalNotchWidth) var customizePhysicalNotchWidth
     @Default(.notchHeightMode) var notchHeightMode
     @Default(.showOnAllDisplays) var showOnAllDisplays
+    @Default(.onlyNotchDisplays) var onlyNotchDisplays
     @Default(.automaticallySwitchDisplay) var automaticallySwitchDisplay
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
@@ -1220,6 +1221,13 @@ struct GeneralSettings: View {
                     NotificationCenter.default.post(name: Notification.Name.showOnAllDisplaysChanged, object: nil)
                 }
                 .settingsHighlight(id: highlightID("Show on all displays"))
+                Defaults.Toggle(key: .onlyNotchDisplays) {
+                    Text("Tylko na ekranie z notchem")
+                }
+                .onChange(of: onlyNotchDisplays) {
+                    NotificationCenter.default.post(name: Notification.Name.onlyNotchDisplaysChanged, object: nil)
+                }
+                .help("Na monitorach bez notcha wyspa nie pojawia się wcale. Przy zamkniętej klapie i samym monitorze zewnętrznym Atoll nie pokazuje wyspy.")
                 Picker("Show on a specific display", selection: $coordinator.preferredScreen) {
                     ForEach(screens, id: \.self) { screen in
                         Text(LocalizedStringKey(screen))

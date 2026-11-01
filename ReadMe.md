@@ -92,6 +92,14 @@ Skróty pod palcami tak jak w Windowsie: **kopiuj, wklej, zapisz** wciskasz lewy
 - **Caps Lock bez opóźnienia.**
 - Ponawiane automatycznie po podłączeniu klawiatury (np. Bluetooth) i wybudzeniu Maca. Zmiany działają od razu.
 
+### 🖥️ Tylko na ekranie z notchem
+
+Przełącznik w Ustawienia → **Ogólne** → **Tylko na ekranie z notchem** (domyślnie wyłączony). Po włączeniu wyspa nie pojawia się na monitorach bez notcha w żadnej postaci:
+
+- otwarta klapa + monitor zewnętrzny → wyspa tylko na ekranie MacBooka,
+- zamknięta klapa + sam monitor zewnętrzny → brak wyspy,
+- przełączenie następuje od razu po podłączeniu lub odłączeniu monitora.
+
 ---
 
 ## 🛠️ Poprawki względem oryginału

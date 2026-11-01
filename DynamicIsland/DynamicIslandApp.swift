@@ -1028,6 +1028,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name.onlyNotchDisplaysChanged, object: nil, queue: nil
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.cleanupWindows()
+                self.adjustWindowPosition(changeAlpha: true)
+            }
+        }
+
         DistributedNotificationCenter.default().addObserver(
             self, selector: #selector(onScreenLocked(_:)),
             name: NSNotification.Name(rawValue: "com.apple.screenIsLocked"), object: nil)
@@ -1582,9 +1592,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    private func islandAllowed(on screen: NSScreen) -> Bool {
+        !Defaults[.onlyNotchDisplays] || screen.safeAreaInsets.top > 0
+    }
+
     @objc func adjustWindowPosition(changeAlpha: Bool = false) {
         if Defaults[.showOnAllDisplays] {
-            let currentScreens = Set(NSScreen.screens)
+            let currentScreens = Set(NSScreen.screens.filter { islandAllowed(on: $0) })
             
             for screen in windows.keys where !currentScreens.contains(screen) {
                 if let window = windows[screen] {
@@ -1614,7 +1628,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         } else {
-            let selectedScreen: NSScreen
+            var selectedScreen: NSScreen
 
             if let preferredScreen = NSScreen.screens.first(where: {
                 $0.localizedName == coordinator.preferredScreen
@@ -1629,6 +1643,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     window.alphaValue = 0
                 }
                 return
+            }
+
+            if !islandAllowed(on: selectedScreen) {
+                if let notchScreen = NSScreen.screens.first(where: { islandAllowed(on: $0) }) {
+                    coordinator.selectedScreen = notchScreen.localizedName
+                    selectedScreen = notchScreen
+                } else {
+                    if window != nil {
+                        cleanupWindows()
+                    }
+                    syncNotchSpaceMembership()
+                    return
+                }
             }
             
             vm.screen = selectedScreen.localizedName
@@ -1710,6 +1737,7 @@ extension Notification.Name {
     static let selectedScreenChanged = Notification.Name("SelectedScreenChanged")
     static let notchHeightChanged = Notification.Name("NotchHeightChanged")
     static let showOnAllDisplaysChanged = Notification.Name("showOnAllDisplaysChanged")
+    static let onlyNotchDisplaysChanged = Notification.Name("onlyNotchDisplaysChanged")
     static let automaticallySwitchDisplayChanged = Notification.Name("automaticallySwitchDisplayChanged")
 }
 
