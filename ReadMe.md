@@ -113,6 +113,8 @@ Przełącznik w Ustawienia → **Ogólne** → **Tylko na ekranie z notchem** (d
 | „100” z wtyczką dotykało krawędzi ikony baterii | margines wewnątrz ikony |
 | Przy starcie wyskakiwał regulator głośności | brak |
 | Restart Atolla zabierał fokus aktywnej aplikacji | start w tle |
+| Alert „memory usage is high” mierzył pamięć współdzieloną z systemem (`resident_size`) | liczy tylko pamięć Atolla (`phys_footprint`, jak Monitor aktywności); próg nadal 1 GB |
+| Film w przeglądarce bez miniatury → ikona przeglądarki jako okładka → skok o kilkaset MB (zapis wszystkich 32 rozmiarów ikony przez TIFF) | ikona w jednym rozmiarze 512 px, okładka kodowana bez TIFF (test z ikoną Safari: 691 MB → 59 MB) |
 
 ---
 
