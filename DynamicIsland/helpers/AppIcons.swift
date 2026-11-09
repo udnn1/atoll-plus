@@ -65,7 +65,9 @@ func AppIconAsNSImage(for bundleID: String) -> NSImage? {
     
     if let appURL = workspace.urlForApplication(withBundleIdentifier: bundleID) {
         let appIcon = workspace.icon(forFile: appURL.path)
-        return appIcon
+        var rect = NSRect(x: 0, y: 0, width: 512, height: 512)
+        guard let cgImage = appIcon.cgImage(forProposedRect: &rect, context: nil, hints: nil) else { return appIcon }
+        return NSImage(cgImage: cgImage, size: NSSize(width: 512, height: 512))
     }
     return nil
 }

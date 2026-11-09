@@ -807,10 +807,8 @@ final class FullScreenArtworkWindowManager: ObservableObject {
     }
 
     private nonisolated func encodeToPNG(_ image: NSImage) -> Data? {
-        guard let tiffData = image.tiffRepresentation,
-              let bitmap = NSBitmapImageRep(data: tiffData)
-        else { return nil }
-        return bitmap.representation(using: .png, properties: [:])
+        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        return NSBitmapImageRep(cgImage: cgImage).representation(using: .png, properties: [:])
     }
 
     private nonisolated func imageFingerprint(for image: NSImage) -> String? {
@@ -823,9 +821,8 @@ final class FullScreenArtworkWindowManager: ObservableObject {
     }
 
     private func encodeBlurredWallpaperPNG(from artwork: NSImage, targetPixelSize: CGSize) -> Data? {
-        guard let tiffData = artwork.tiffRepresentation,
-              let sourceImage = CIImage(data: tiffData)
-        else { return nil }
+        guard let artworkCGImage = artwork.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        let sourceImage = CIImage(cgImage: artworkCGImage)
 
         let targetRect = CGRect(origin: .zero, size: targetPixelSize)
         let sourceExtent = sourceImage.extent
@@ -878,11 +875,8 @@ final class FullScreenArtworkWindowManager: ObservableObject {
         gradient?.draw(in: NSRect(origin: .zero, size: renderedImage.size), angle: -90)
         composedImage.unlockFocus()
 
-        guard let finalTIFF = composedImage.tiffRepresentation,
-              let finalBitmap = NSBitmapImageRep(data: finalTIFF)
-        else { return nil }
-
-        return finalBitmap.representation(using: .png, properties: [:])
+        guard let finalCGImage = composedImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        return NSBitmapImageRep(cgImage: finalCGImage).representation(using: .png, properties: [:])
     }
 
     private func applyDeferredStaticFallback() {
