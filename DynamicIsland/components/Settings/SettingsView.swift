@@ -1146,6 +1146,7 @@ struct GeneralSettings: View {
     @Default(.notchHeightMode) var notchHeightMode
     @Default(.showOnAllDisplays) var showOnAllDisplays
     @Default(.onlyNotchDisplays) var onlyNotchDisplays
+    @Default(.disableIsland) var disableIsland
     @Default(.automaticallySwitchDisplay) var automaticallySwitchDisplay
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
@@ -1214,6 +1215,13 @@ struct GeneralSettings: View {
                     Text("Launch at login")
                 }
                 .settingsHighlight(id: highlightID("Launch at login"))
+                Defaults.Toggle(key: .disableIsland) {
+                    Text("Wyłącz wyspę")
+                }
+                .onChange(of: disableIsland) {
+                    NotificationCenter.default.post(name: Notification.Name.onlyNotchDisplaysChanged, object: nil)
+                }
+                .help("Chowa wyspę na wszystkich ekranach. HUD głośności i jasności, gesty gładzika, mapowanie klawiszy i pozostałe funkcje działają dalej.")
                 Defaults.Toggle(key: .showOnAllDisplays) {
                     Text("Show on all displays")
                 }

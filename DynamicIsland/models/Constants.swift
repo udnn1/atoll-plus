@@ -989,6 +989,7 @@ extension Defaults.Keys {
     static let showOnAllDisplays = Key<Bool>("showOnAllDisplays", default: false)
     static let automaticallySwitchDisplay = Key<Bool>("automaticallySwitchDisplay", default: true)
     static let onlyNotchDisplays = Key<Bool>("onlyNotchDisplays", default: false)
+    static let disableIsland = Key<Bool>("disableIsland", default: false)
     static let releaseName = Key<String>("releaseName", default: "Kaafu")
     static let hideDynamicIslandFromScreenCapture = Key<Bool>("hideDynamicIslandFromScreenCapture", default: false)
     

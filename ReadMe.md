@@ -100,6 +100,10 @@ Przełącznik w Ustawienia → **Ogólne** → **Tylko na ekranie z notchem** (d
 - zamknięta klapa + sam monitor zewnętrzny → brak wyspy,
 - przełączenie następuje od razu po podłączeniu lub odłączeniu monitora.
 
+### 🚫 Wyłącz wyspę
+
+Przełącznik w Ustawienia → **Ogólne** → **Wyłącz wyspę** (domyślnie wyłączony). Po włączeniu wyspa znika ze wszystkich ekranów, a reszta Atolla działa dalej: HUD głośności i jasności (np. Vertical Bar), gesty gładzika, mapowanie klawiszy, widżety ekranu blokady i skróty. Zmiana działa od razu, bez restartu.
+
 ---
 
 ## 🛠️ Poprawki względem oryginału

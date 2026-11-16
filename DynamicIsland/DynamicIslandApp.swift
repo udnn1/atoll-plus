@@ -1593,7 +1593,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func islandAllowed(on screen: NSScreen) -> Bool {
-        !Defaults[.onlyNotchDisplays] || screen.safeAreaInsets.top > 0
+        !Defaults[.disableIsland] && (!Defaults[.onlyNotchDisplays] || screen.safeAreaInsets.top > 0)
     }
 
     @objc func adjustWindowPosition(changeAlpha: Bool = false) {
