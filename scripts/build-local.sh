@@ -26,4 +26,6 @@ echo "Build OK w $(( $(date +%s) - START ))s"
 
 if [[ "${1:-}" != "--no-install" ]]; then
   "$ROOT/scripts/install-local.sh" "$DERIVED/Build/Products/Release/Atoll.app"
+  /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$DERIVED/Build/Products/Release/Atoll.app" 2>/dev/null || true
+  rm -rf "$DERIVED/Build/Products/Release/Atoll.app"
 fi

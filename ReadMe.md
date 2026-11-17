@@ -104,6 +104,8 @@ Przełącznik w Ustawienia → **Ogólne** → **Tylko na ekranie z notchem** (d
 
 Przełącznik w Ustawienia → **Ogólne** → **Wyłącz wyspę** (domyślnie wyłączony). Po włączeniu wyspa znika ze wszystkich ekranów, a reszta Atolla działa dalej: HUD głośności i jasności (np. Vertical Bar), gesty gładzika, mapowanie klawiszy, widżety ekranu blokady i skróty. Zmiana działa od razu, bez restartu.
 
+Atoll nie ma ikony w Docku, więc przy wyłączonej wyspie i ukrytej ikonie w pasku menu ponowne uruchomienie z folderu Aplikacje (lub Spotlight) otwiera okno ustawień.
+
 ---
 
 ## 🛠️ Poprawki względem oryginału

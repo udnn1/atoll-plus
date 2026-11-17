@@ -281,6 +281,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         audioTapObserverTokens.removeAll()
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        SettingsWindowController.shared.showWindow()
+        return false
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         SlidrTrackpadController.shared.stop()
         let userInfo: [String: Any] = [
