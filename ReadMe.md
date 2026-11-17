@@ -144,7 +144,7 @@ cd atoll-plus
 
 | Skrypt | Co robi |
 |---|---|
-| `scripts/build-local.sh` | build przyrostowy (~15 s po zmianie zamiast ~100 s), potem instalacja; `--no-install` tylko buduje |
+| `scripts/build-local.sh` | build przyrostowy (~15 s po zmianie zamiast ~100 s), potem instalacja i usunięcie kopii z DerivedData (jeden Atoll w Spotlight/Launchpadzie); `--no-install` tylko buduje |
 | `scripts/install-local.sh` | podpisuje stałym lokalnym certyfikatem, podmienia `/Applications/Atoll.app`, uruchamia w tle |
 
 > [!TIP]
